@@ -46,10 +46,10 @@ window.onload = function() {
 var bluetoothDevice;
 var characteristic;
 
-//var TEXT_SERVICE_UUID = 'B07FF626-4B79-0001-89E5-FAE40AB7E07F';
-//var TEXT_CHARACTERISTIC_UUID = '"B07FF626-4B79-0004-89E5-FAE40AB7E07F';
-var TEXT_SERVICE_UUID = '0000aaa0-0000-1000-8000-aabbccddeeff'
-var TEXT_CHARACTERISTIC_UUID = '0000aaa2-0000-1000-8000-aabbccddeeff';
+var TEXT_SERVICE_UUID = 'B07FF626-4B79-0001-89E5-FAE40AB7E07F';
+var TEXT_CHARACTERISTIC_UUID = '"B07FF626-4B79-0004-89E5-FAE40AB7E07F';
+//var TEXT_SERVICE_UUID = '0000aaa0-0000-1000-8000-aabbccddeeff'
+//var TEXT_CHARACTERISTIC_UUID = '0000aaa2-0000-1000-8000-aabbccddeeff';
 
 var status;
 
@@ -64,8 +64,8 @@ function connect() {
 
   //options.acceptAllDevices = true;
   options.filters = [
-  {acceptAllDevices: true}
-//    {services: [TEXT_SERVICE_UUID]}
+//  {acceptAllDevices: true}
+    {services: [TEXT_SERVICE_UUID]}
   ];
 
   update_status('Connecting...');
