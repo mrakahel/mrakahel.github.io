@@ -70,7 +70,7 @@ function connect() {
 
   update_status('Connecting...');
 
-  navigator.bluetooth.requestDevice({acceptAllDevices: true})
+  navigator.bluetooth.requestDevice(options)
   .then(device => {
     bluetoothDevice = device;
     console.log("device", device);
