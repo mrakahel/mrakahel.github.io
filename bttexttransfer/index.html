@@ -98,6 +98,9 @@ function connect() {
 
 //メッセージを送信
 function sendMessage() {
+  alert(bluetoothDevice);
+  alert(bluetoothDevice.gatt.connected);
+  alert(characteristic);
   if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
   var text = document.querySelector("#message").value;
   alert(text);
