@@ -11,5 +11,5 @@
         }
     ],
     "scope": "./",
-    "orientation": "any"
+    "orientation": "portrait"
 }
