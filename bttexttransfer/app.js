@@ -79,7 +79,7 @@ function disconnect() {
     alert("BLE接続を切断しました。");
 }
 
-function reconnect() {
+async function reconnect() {
     if (!bluetoothDevice) {
         console.log("device is null");
         return;
@@ -109,8 +109,8 @@ function reconnect() {
 }
 
 function update_status(state) {
-let elm = document.getElementById('status');
-elm.textContent = state;
+    let elm = document.getElementById('status');
+    elm.textContent = state;
 }
 
 function clear_text() {
