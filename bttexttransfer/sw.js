@@ -2,7 +2,9 @@ var CACHE_NAME  = "texttransfer";
 var urlsToCache = [
     "index.html",
     "https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js",
-    "style.css"
+    "style.css",
+    "app.js",
+    "/favicon.ico"
 ];
 const CACHE_KEYS = [
     CACHE_NAME
@@ -19,6 +21,21 @@ self.addEventListener('install', event => {
           })
     );
 });
+
+self.addEventListener('activate', event => {
+    event.waitUntil(
+      caches.keys().then(keys => {
+        return Promise.all(
+          keys.filter(key => {
+            return !CACHE_KEYS.includes(key);
+          }).map(key => {
+            // 不要なキャッシュを削除
+            return caches.delete(key);
+          })
+        );
+      })
+    );
+  });
 
 self.addEventListener('fetch', event => {
     console.log(`fetch`);
@@ -73,11 +90,9 @@ self.addEventListener('fetch', event => {
                 return response;
             }
             //オフラインでキャッシュもなかったパターン
-            return caches.match("offline.html")
+            return caches.match("index.html")
                 .then(function(responseNodata)
                 {
-                    //適当な変数にオフラインのときに渡すリソースを入れて返却
-                    //今回はoffline.htmlを返しています
                     return responseNodata;
                 });
             }

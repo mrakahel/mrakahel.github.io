@@ -48,7 +48,7 @@ async function connect() {
         console.log("service", service);
         chara = await service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
         console.log("characteristic", chara);
-        alert("BLE接続が完了しました。");
+        //alert("BLE接続が完了しました。");
         update_status('Connected');
         characteristic = chara;    
     }catch(error){
@@ -80,8 +80,9 @@ function disconnect() {
         console.log("device", bluetoothDevice);
         return;
     } 
+    bluetoothDevice.onGattServerDisconnected = null;
     bluetoothDevice.gatt.disconnect();
-    alert("BLE接続を切断しました。");
+    //alert("BLE接続を切断しました。");
 }
 
 async function reconnect() {
@@ -133,7 +134,7 @@ async function onAvailabilityChanged() {
 
 async function onGattServerDisconnected() {
     const maxretry = 3;
-    update_status("reconnecting...")
+    update_status("Reconnecting...")
     for(let step = 0; step < maxretry; step++){
         if(await reconnect()) return;
     }
