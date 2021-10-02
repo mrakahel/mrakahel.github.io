@@ -40,7 +40,15 @@
 <script>
 
 window.onload = function() {
-  
+  let availability = Bluetooth.getAvailability();
+  if(!availability) alert("Bluetooth not available");
+};
+Bluetooth.getavailabilitychanged = function() {
+  let availability = Bluetooth.getAvailability();
+  if(!availability) {
+    alert("Bluetooth not available");
+    update_status("Disconnected");
+  }
 };
 
 var bluetoothDevice;
@@ -58,13 +66,17 @@ d3.select("#connect").on("click", connect);
 d3.select("#disconnect").on("click", disconnect);
 d3.select("#send").on("click", sendMessage);
 
+
+bluetoothDevice.ongattserverdisconnected = function() {
+  update_status("Disconnected");
+};
+
 //デバイスに接続する
 function connect() {
   let options = {};
 
   //options.acceptAllDevices = true;
   options.filters = [
-//  {acceptAllDevices: true}
     {services: [TEXT_SERVICE_UUID]}
   ];
 
@@ -102,6 +114,7 @@ function sendMessage() {
   if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
   var text = document.querySelector("#message").value;
 //  alert(text);
+  if(text === "") return;
   var arrayBuf = new TextEncoder().encode(text);
   characteristic.writeValue(arrayBuf);
   clear_text();
@@ -124,4 +137,4 @@ function clear_text() {
 }
 </script>
 </body>
-</html><Guid("B07FF626-4B79-472B-89E5-FAE40AB7E07F")></Guid>
+</html>
