@@ -34,7 +34,6 @@ navigator.bluetooth.requestDevice(options)
     bluetoothDevice = device;
     console.log("device", device);
     bluetoothDevice.addEventListener('ongattserverdisconnected', onGattServerDisconnected);
-
     return device.gatt.connect();
 })
 .then(server =>{
@@ -116,7 +115,7 @@ function clear_text() {
 }
 
 function onAvailabilityChanged() {
-    let availability = Bluetooth.getAvailability();
+    let availability = navigator.bluetooth.getAvailability();
     if(!availability) {
         alert("Bluetooth not available");
         update_status("Disconnected");
