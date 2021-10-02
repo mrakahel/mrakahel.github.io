@@ -19,7 +19,7 @@ d3.select("#send").on("click", sendMessage);
 
 
 //デバイスに接続する
-function connect() {
+async function connect() {
     let options = {};
 
     //options.acceptAllDevices = true;
@@ -29,32 +29,32 @@ function connect() {
 
     update_status('Connecting...');
 
-    navigator.bluetooth.requestDevice(options)
-    .then(device => {
-        bluetoothDevice = device;
-        console.log("device", device);
+    let server;
+    let service;
+    let chara;
+    try{
+        bluetoothDevice = await navigator.bluetooth.requestDevice(options)
+        console.log("device", bluetoothDevice);
         bluetoothDevice.ongattserverdisconnected = onGattServerDisconnected;
-        return device.gatt.connect();
-    })
-    .then(server =>{
+        server = bluetoothDevice.gatt.connect();
+    
+        if(bluetoothDevice.gatt.connected){
+            server = bluetoothDevice.gatt;
+        }else{
+            server = await bluetoothDevice.gatt.connect();
+        }
         console.log("server", server);
-        return server.getPrimaryService(TEXT_SERVICE_UUID);
-    })
-    .then(service => {
+        service = await server.getPrimaryService(TEXT_SERVICE_UUID);
         console.log("service", service);
-        return service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
-    })
-    .then(chara => {
+        chara = await service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
         console.log("characteristic", chara);
         alert("BLE接続が完了しました。");
         update_status('Connected');
-        characteristic = chara;
-        
-    })
-    .catch(error => {
+        characteristic = chara;    
+    }catch(error){
         console.log(error);
         update_status(error);
-    });
+    }
 }
 
 //メッセージを送信
@@ -67,10 +67,11 @@ async function sendMessage() {
     var arrayBuf = new TextEncoder().encode(text);
     try{
         const response = await characteristic.writeValueWithoutResponse(arrayBuf);
+        clear_text();
     }catch(error){
         alert('send failed');
     }
-    clear_text();
+
 }
 
 //BLE切断処理
@@ -103,13 +104,14 @@ async function reconnect() {
         console.log("service", service);
         chara = await service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
         console.log("characteristic", chara);
-        alert("BLE接続が完了しました。");
         update_status('Connected');
-        characteristic = chara;    
+        characteristic = chara; 
+        return true;   
     }catch(error){
         console.log(error);
         update_status(error);
     }
+    return false;
 }
 
 function update_status(state) {
@@ -129,8 +131,13 @@ async function onAvailabilityChanged() {
     }
 }
 
-function onGattServerDisconnected() {
-    update_status("Disconnected (ongattserverdisconnected).");
+async function onGattServerDisconnected() {
+    const maxretry = 3;
+    update_status("reconnecting...")
+    for(let step = 0; step < maxretry; step++){
+        if(await reconnect()) return;
+    }
+    update_status("Disconnected");
 }
 
 window.addEventListener('load', async e => {
