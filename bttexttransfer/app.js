@@ -35,6 +35,7 @@ async function connect() {
     try{
         bluetoothDevice = await navigator.bluetooth.requestDevice(options)
         console.log("device", bluetoothDevice);
+        update_devicename(bluetoothDevice.name);
         bluetoothDevice.ongattserverdisconnected = onGattServerDisconnected;
         server = bluetoothDevice.gatt.connect();
     
@@ -82,6 +83,7 @@ function disconnect() {
     } 
     bluetoothDevice.onGattServerDisconnected = null;
     bluetoothDevice.gatt.disconnect();
+    update_devicename("None");
     //alert("BLE接続を切断しました。");
 }
 
@@ -118,6 +120,11 @@ async function reconnect() {
 function update_status(state) {
     let elm = document.getElementById('status');
     elm.textContent = state;
+}
+
+function update_devicename(name) {
+    let elm = document.getElementById('devicename');
+    elm.textContent = name;
 }
 
 function clear_text() {
