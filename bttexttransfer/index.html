@@ -99,7 +99,7 @@ function connect() {
     characteristic = chara;
     
     bluetoothDevice.ongattserverdisconnected = function() {
-      update_status("Disconnected");
+      update_status("Disconnected (ongattserverdisconnected).");
       auto_reconnect();
     };
 
@@ -112,11 +112,11 @@ function connect() {
 
 //メッセージを送信
 function sendMessage() {
-  alert("bluetoothDevice:"+bluetoothDevice+" connected:"+bluetoothDevice.gatt.connected+" characteristic:"+characteristic);
+  if(text === "") return;
+  //alert("bluetoothDevice:"+bluetoothDevice+" connected:"+bluetoothDevice.gatt.connected+" characteristic:"+characteristic);
   if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
   var text = document.querySelector("#message").value;
   //  alert(text);
-  if(text === "") return;
   var arrayBuf = new TextEncoder().encode(text);
   characteristic.writeValueWithoutResponse(arrayBuf);
   clear_text();
@@ -149,7 +149,7 @@ function auto_reconnect() {
     characteristic = chara;
     
     bluetoothDevice.ongattserverdisconnected = function() {
-      update_status("Disconnected");
+      update_status("Disconnected (ongattserverdisconnected)");
     };
   });
 }
