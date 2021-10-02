@@ -121,7 +121,7 @@ function clear_text() {
     document.querySelector("#message").value = "";
 }
 
-function onAvailabilityChanged() {
+async function onAvailabilityChanged() {
     let availability = await navigator.bluetooth.getAvailability();
     if(!availability) {
         alert("Bluetooth not available");
