@@ -41,10 +41,10 @@
 <script>
 
 window.onload = function() {
-  let availability = Bluetooth.getAvailability();
+  let availability = navigator.bluetooth.getAvailability();
   if(!availability) alert("Bluetooth not available");
 };
-Bluetooth.addEventListener('onavailabilitychanged', OnAvailabilityChanged);
+navigator.bluetooth.addEventListener('onavailabilitychanged', OnAvailabilityChanged);
 
 var bluetoothDevice;
 var characteristic;
