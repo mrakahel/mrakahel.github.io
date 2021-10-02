@@ -77,9 +77,12 @@ function disconnect() {
     alert("BLE接続を切断しました。");
 }
 
-async function reconnect() {
-    if (!bluetoothDevice) return ;
-    const server = await new Promise(resolve => {
+function reconnect() {
+    if (!bluetoothDevice) {
+        alert("device is null");
+        return;
+    }
+    const server = new Promise(resolve => {
         return bluetoothDevice.gatt.connect();
     })
     .then(server =>{
