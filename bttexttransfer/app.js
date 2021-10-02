@@ -20,41 +20,41 @@ d3.select("#send").on("click", sendMessage);
 
 //デバイスに接続する
 function connect() {
-let options = {};
+    let options = {};
 
-//options.acceptAllDevices = true;
-options.filters = [
-    {services: [TEXT_SERVICE_UUID]}
-];
+    //options.acceptAllDevices = true;
+    options.filters = [
+        {services: [TEXT_SERVICE_UUID]}
+    ];
 
-update_status('Connecting...');
+    update_status('Connecting...');
 
-navigator.bluetooth.requestDevice(options)
-.then(device => {
-    bluetoothDevice = device;
-    console.log("device", device);
-    bluetoothDevice.addEventListener('ongattserverdisconnected', onGattServerDisconnected);
-    return device.gatt.connect();
-})
-.then(server =>{
-    console.log("server", server);
-    return server.getPrimaryService(TEXT_SERVICE_UUID);
-})
-.then(service => {
-    console.log("service", service);
-    return service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
-})
-.then(chara => {
-    console.log("characteristic", chara);
-    alert("BLE接続が完了しました。");
-    update_status('Connected');
-    characteristic = chara;
-    
-})
-.catch(error => {
-    console.log(error);
-    update_status(error);
-});
+    navigator.bluetooth.requestDevice(options)
+    .then(device => {
+        bluetoothDevice = device;
+        console.log("device", device);
+        bluetoothDevice.addEventListener('ongattserverdisconnected', onGattServerDisconnected);
+        return device.gatt.connect();
+    })
+    .then(server =>{
+        console.log("server", server);
+        return server.getPrimaryService(TEXT_SERVICE_UUID);
+    })
+    .then(service => {
+        console.log("service", service);
+        return service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
+    })
+    .then(chara => {
+        console.log("characteristic", chara);
+        alert("BLE接続が完了しました。");
+        update_status('Connected');
+        characteristic = chara;
+        
+    })
+    .catch(error => {
+        console.log(error);
+        update_status(error);
+    });
 }
 
 //メッセージを送信
@@ -71,17 +71,24 @@ function sendMessage() {
 
 //BLE切断処理
 function disconnect() {
-    if (!bluetoothDevice || !bluetoothDevice.gatt.connected) return ;
+    if (!bluetoothDevice || !bluetoothDevice.gatt.connected){
+        console.log("device", bluetoothDevice);
+        return;
+    } 
     bluetoothDevice.gatt.disconnect();
     alert("BLE接続を切断しました。");
 }
 
 function reconnect() {
     if (!bluetoothDevice) {
-        alert("device is null");
+        console.log("device is null");
         return;
     }
-    const server = new Promise(resolve => {
+    console.log("device", bluetoothDevice);
+    new Promise(resolve => {
+        if(bluetoothDevice.gatt.connected){
+            return bluetoothDevice.gatt;
+        }
         return bluetoothDevice.gatt.connect();
     })
     .then(server =>{
@@ -115,7 +122,7 @@ function clear_text() {
 }
 
 function onAvailabilityChanged() {
-    let availability = navigator.bluetooth.getAvailability();
+    let availability = await navigator.bluetooth.getAvailability();
     if(!availability) {
         alert("Bluetooth not available");
         update_status("Disconnected");
@@ -140,7 +147,7 @@ window.addEventListener('load', async e => {
             console.log(`SW not registered`);
         }
     }
-    let availability = navigator.bluetooth.getAvailability();
+    let availability = await navigator.bluetooth.getAvailability();
     if(!availability) alert("Bluetooth not available");
 
 });
