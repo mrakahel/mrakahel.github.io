@@ -139,10 +139,6 @@ function reconnect() {
     alert("BLE接続が完了しました。");
     update_status('Connected');
     characteristic = chara;
-    
-    bluetoothDevice.ongattserverdisconnected = function() {
-      update_status("Disconnected (ongattserverdisconnected)");
-    };
   });
 }
 
@@ -165,7 +161,6 @@ function OnAvailabilityChanged() {
 
 function OnGattServerDisconnected() {
   update_status("Disconnected (ongattserverdisconnected).");
-  auto_reconnect();
 }
 
 </script>
