@@ -20,7 +20,6 @@
       <div>
         <button id="connect">接続</button>
         <button id="disconnect">切断</button>
-        <button id="reconnect">再接続</button>
         <div>
           <p>Status: <span id="status">Disconnected</span></p>
     
@@ -59,7 +58,6 @@ var status;
 //ボタンイベントリスナー
 d3.select("#connect").on("click", connect);
 d3.select("#disconnect").on("click", disconnect);
-d3.select("#reconnect").on("click", reconnect);
 d3.select("#send").on("click", sendMessage);
 
 
