@@ -85,31 +85,27 @@ function reconnect() {
         return;
     }
     console.log("device", bluetoothDevice);
-    new Promise(resolve => {
+    let server;
+    let service;
+    let chara;
+    try{
         if(bluetoothDevice.gatt.connected){
-            return bluetoothDevice.gatt;
+            server = bluetoothDevice.gatt;
+        }else{
+            server = await bluetoothDevice.gatt.connect();
         }
-        return bluetoothDevice.gatt.connect();
-    })
-    .then(server =>{
         console.log("server", server);
-        return server.getPrimaryService(TEXT_SERVICE_UUID);
-    })
-    .then(service => {
+        service = server.getPrimaryService(TEXT_SERVICE_UUID);
         console.log("service", service);
-        return service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
-    })
-    .then(chara => {
+        chara = await service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
         console.log("characteristic", chara);
         alert("BLE接続が完了しました。");
         update_status('Connected');
-        characteristic = chara;
-        
-    })
-    .catch(error => {
+        characteristic = chara;    
+    }catch(error){
         console.log(error);
         update_status(error);
-    });
+    }
 }
 
 function update_status(state) {
