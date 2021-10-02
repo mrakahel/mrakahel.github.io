@@ -67,10 +67,6 @@ d3.select("#disconnect").on("click", disconnect);
 d3.select("#send").on("click", sendMessage);
 
 
-bluetoothDevice.ongattserverdisconnected = function() {
-  update_status("Disconnected");
-};
-
 //デバイスに接続する
 function connect() {
   let options = {};
@@ -101,6 +97,11 @@ function connect() {
     alert("BLE接続が完了しました。");
     update_status('Connected');
     characteristic = chara;
+    
+    bluetoothDevice.ongattserverdisconnected = function() {
+      update_status("Disconnected");
+    };
+
   })
   .catch(error => {
     console.log(error);
@@ -113,10 +114,10 @@ function sendMessage() {
   alert("bluetoothDevice:"+bluetoothDevice+" connected:"+bluetoothDevice.gatt.connected+" characteristic:"+characteristic);
   if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
   var text = document.querySelector("#message").value;
-//  alert(text);
+  //  alert(text);
   if(text === "") return;
   var arrayBuf = new TextEncoder().encode(text);
-  characteristic.writeValue(arrayBuf);
+  characteristic.writeValueWithoutResponse(arrayBuf);
   clear_text();
 }
 
