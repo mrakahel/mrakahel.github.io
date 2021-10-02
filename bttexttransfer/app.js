@@ -58,14 +58,18 @@ function connect() {
 }
 
 //メッセージを送信
-function sendMessage() {
+async function sendMessage() {
     if(text === "") return;
     //alert("bluetoothDevice:"+bluetoothDevice+" connected:"+bluetoothDevice.gatt.connected+" characteristic:"+characteristic);
     if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
     var text = document.querySelector("#message").value;
     //  alert(text);
     var arrayBuf = new TextEncoder().encode(text);
-    characteristic.writeValueWithoutResponse(arrayBuf);
+    try{
+        const response = await characteristic.writeValueWithoutResponse(arrayBuf);
+    }catch(error){
+        alert('send failed');
+    }
     clear_text();
 }
 
@@ -95,7 +99,7 @@ async function reconnect() {
             server = await bluetoothDevice.gatt.connect();
         }
         console.log("server", server);
-        service = server.getPrimaryService(TEXT_SERVICE_UUID);
+        service = await server.getPrimaryService(TEXT_SERVICE_UUID);
         console.log("service", service);
         chara = await service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
         console.log("characteristic", chara);
@@ -143,8 +147,6 @@ window.addEventListener('load', async e => {
             console.log(`SW not registered`);
         }
     }
-    let availability = await navigator.bluetooth.getAvailability();
-    if(!availability) alert("Bluetooth not available");
-
+    navigator.bluetooth.addEventListener('onavailabilitychanged', OnAvailabilityChanged);
 });
 
