@@ -147,6 +147,6 @@ window.addEventListener('load', async e => {
             console.log(`SW not registered`);
         }
     }
-    navigator.bluetooth.addEventListener('onavailabilitychanged', OnAvailabilityChanged);
+    navigator.bluetooth.addEventListener('onavailabilitychanged', onAvailabilityChanged);
 });
 
