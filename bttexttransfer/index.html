@@ -100,6 +100,7 @@ function connect() {
     
     bluetoothDevice.ongattserverdisconnected = function() {
       update_status("Disconnected");
+      auto_reconnect();
     };
 
   })
@@ -126,6 +127,31 @@ function disconnect() {
   if (!bluetoothDevice || !bluetoothDevice.gatt.connected) return ;
   bluetoothDevice.gatt.disconnect();
   alert("BLE接続を切断しました。");
+}
+
+function auto_reconnect() {
+  if (!bluetoothDevice) return ;
+  return new Promise(resolve => {
+    return bluetoothDevice.gatt.connect();
+  })
+  .then(server =>{
+    console.log("server", server)
+    return server.getPrimaryService(TEXT_SERVICE_UUID);
+  })
+  .then(service => {
+    console.log("service", service)
+    return service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
+  })
+  .then(chara => {
+    console.log("characteristic", chara)
+    alert("BLE接続が完了しました。");
+    update_status('Connected');
+    characteristic = chara;
+    
+    bluetoothDevice.ongattserverdisconnected = function() {
+      update_status("Disconnected");
+    };
+  });
 }
 
 function update_status(state) {
