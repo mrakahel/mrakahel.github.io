@@ -33,7 +33,7 @@ function connect() {
     .then(device => {
         bluetoothDevice = device;
         console.log("device", device);
-        bluetoothDevice.addEventListener('ongattserverdisconnected', onGattServerDisconnected);
+        bluetoothDevice.ongattserverdisconnected = onGattServerDisconnected;
         return device.gatt.connect();
     })
     .then(server =>{
