@@ -20,6 +20,7 @@
       <div>
         <button id="connect">接続</button>
         <button id="disconnect">切断</button>
+        <button id="reconnect">再接続</button>
         <div>
           <p>Status: <span id="status">Disconnected</span></p>
     
@@ -43,13 +44,7 @@ window.onload = function() {
   let availability = Bluetooth.getAvailability();
   if(!availability) alert("Bluetooth not available");
 };
-Bluetooth.getavailabilitychanged = function() {
-  let availability = Bluetooth.getAvailability();
-  if(!availability) {
-    alert("Bluetooth not available");
-    update_status("Disconnected");
-  }
-};
+Bluetooth.addEventListener('onavailabilitychanged', OnAvailabilityChanged);
 
 var bluetoothDevice;
 var characteristic;
@@ -64,6 +59,7 @@ var status;
 //ボタンイベントリスナー
 d3.select("#connect").on("click", connect);
 d3.select("#disconnect").on("click", disconnect);
+d3.select("#reconnect").on("click", reconnect);
 d3.select("#send").on("click", sendMessage);
 
 
@@ -85,24 +81,20 @@ function connect() {
     return device.gatt.connect();
   })
   .then(server =>{
-    console.log("server", server)
+    console.log("server", server);
     return server.getPrimaryService(TEXT_SERVICE_UUID);
   })
   .then(service => {
-    console.log("service", service)
+    console.log("service", service);
     return service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
   })
   .then(chara => {
-    console.log("characteristic", chara)
+    console.log("characteristic", chara);
     alert("BLE接続が完了しました。");
     update_status('Connected');
     characteristic = chara;
     
-    bluetoothDevice.ongattserverdisconnected = function() {
-      update_status("Disconnected (ongattserverdisconnected).");
-      auto_reconnect();
-    };
-
+    bluetoothDevice.addEventListener('ongattserverdisconnected', OnGattServerDisconnected);
   })
   .catch(error => {
     console.log(error);
@@ -129,21 +121,21 @@ function disconnect() {
   alert("BLE接続を切断しました。");
 }
 
-function auto_reconnect() {
+function reconnect() {
   if (!bluetoothDevice) return ;
   return new Promise(resolve => {
     return bluetoothDevice.gatt.connect();
   })
   .then(server =>{
-    console.log("server", server)
+    console.log("server", server);
     return server.getPrimaryService(TEXT_SERVICE_UUID);
   })
   .then(service => {
-    console.log("service", service)
+    console.log("service", service);
     return service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
   })
   .then(chara => {
-    console.log("characteristic", chara)
+    console.log("characteristic", chara);
     alert("BLE接続が完了しました。");
     update_status('Connected');
     characteristic = chara;
@@ -162,6 +154,20 @@ function update_status(state) {
 function clear_text() {
   document.querySelector("#message").value = "";
 }
+
+function OnAvailabilityChanged() {
+  let availability = Bluetooth.getAvailability();
+  if(!availability) {
+    alert("Bluetooth not available");
+    update_status("Disconnected");
+  }
+};
+
+function OnGattServerDisconnected() {
+      update_status("Disconnected (ongattserverdisconnected).");
+      auto_reconnect();
+    };
+
 </script>
 </body>
 </html>
