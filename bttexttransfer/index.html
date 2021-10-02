@@ -161,12 +161,12 @@ function OnAvailabilityChanged() {
     alert("Bluetooth not available");
     update_status("Disconnected");
   }
-};
+}
 
 function OnGattServerDisconnected() {
-      update_status("Disconnected (ongattserverdisconnected).");
-      auto_reconnect();
-    };
+  update_status("Disconnected (ongattserverdisconnected).");
+  auto_reconnect();
+}
 
 </script>
 </body>
