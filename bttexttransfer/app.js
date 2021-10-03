@@ -27,7 +27,7 @@ async function connect() {
         {services: [TEXT_SERVICE_UUID]}
     ];
 
-    update_status('Connecting...');
+    updateStatus('Connecting...');
 
     let server;
     let service;
@@ -35,7 +35,7 @@ async function connect() {
     try{
         bluetoothDevice = await navigator.bluetooth.requestDevice(options)
         console.log("device", bluetoothDevice);
-        update_devicename(bluetoothDevice.name);
+        updateDevicename(bluetoothDevice.name);
         bluetoothDevice.ongattserverdisconnected = onGattServerDisconnected;
         server = bluetoothDevice.gatt.connect();
     
@@ -50,11 +50,11 @@ async function connect() {
         chara = await service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
         console.log("characteristic", chara);
         //alert("BLE接続が完了しました。");
-        update_status('Connected');
+        updateStatus('Connected');
         characteristic = chara;    
     }catch(error){
         console.log(error);
-        update_status(error);
+        updateStatus(error);
     }
 }
 
@@ -68,7 +68,7 @@ async function sendMessage() {
     var arrayBuf = new TextEncoder().encode(text);
     try{
         const response = await characteristic.writeValueWithoutResponse(arrayBuf);
-        clear_text();
+        clearText();
     }catch(error){
         alert('send failed');
     }
@@ -83,7 +83,7 @@ function disconnect() {
     } 
     bluetoothDevice.onGattServerDisconnected = null;
     bluetoothDevice.gatt.disconnect();
-    update_devicename("None");
+    updateDevicename("None");
     //alert("BLE接続を切断しました。");
 }
 
@@ -107,27 +107,27 @@ async function reconnect() {
         console.log("service", service);
         chara = await service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
         console.log("characteristic", chara);
-        update_status('Connected');
+        updateStatus('Connected');
         characteristic = chara; 
         return true;   
     }catch(error){
         console.log(error);
-        update_status(error);
+        updateStatus(error);
     }
     return false;
 }
 
-function update_status(state) {
+function updateStatus(state) {
     let elm = document.getElementById('status');
     elm.textContent = state;
 }
 
-function update_devicename(name) {
+function updateDevicename(name) {
     let elm = document.getElementById('devicename');
     elm.textContent = name;
 }
 
-function clear_text() {
+function clearText() {
     document.querySelector("#message").value = "";
 }
 
@@ -135,17 +135,17 @@ async function onAvailabilityChanged() {
     let availability = await navigator.bluetooth.getAvailability();
     if(!availability) {
         alert("Bluetooth not available");
-        update_status("Disconnected");
+        updateStatus("Disconnected");
     }
 }
 
 async function onGattServerDisconnected() {
     const maxretry = 3;
-    update_status("Reconnecting...")
+    updateStatus("Reconnecting...")
     for(let step = 0; step < maxretry; step++){
         if(await reconnect()) return;
     }
-    update_status("Disconnected");
+    updateStatus("Disconnected");
 }
 
 window.addEventListener('load', async e => {

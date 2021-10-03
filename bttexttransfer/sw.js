@@ -56,16 +56,16 @@ self.addEventListener('fetch', event => {
                     cloneResponse = response.clone();
                     if(response){
                         if(response || response.status == 200){
-                        //キャッシュに追加
-                        caches.open(CACHE_NAME)
-                            .then(function(cache)
-                            {
+                            //キャッシュに追加
+                            caches.open(CACHE_NAME)
+                                .then(function(cache)
+                                {
                                 cache.put(event.request, cloneResponse)
                                     .then(function(){
                                         //正常にキャッシュ追加できたときの処理(必要であれば)
                                         console.log(`cache added`);
                                     });
-                            });
+                                });
                         }else{
                             //正常に取得できなかったときにハンドリングしてもよい
                             console.log(`cache failed`);
@@ -74,8 +74,8 @@ self.addEventListener('fetch', event => {
                         return response;
                     }
                 }).catch(function(error) {
-                //デバッグ用
-                return console.log(error);
+                    //デバッグ用
+                    return console.log(error);
                 });
             })
         );
