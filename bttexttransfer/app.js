@@ -85,6 +85,7 @@ function disconnect() {
     bluetoothDevice.gatt.disconnect();
     bluetoothDevice = undefined;
     updateDevicename("None");
+    updateStatus("Disconnected");
     //alert("BLE接続を切断しました。");
 }
 
