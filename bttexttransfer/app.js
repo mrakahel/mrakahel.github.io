@@ -143,9 +143,11 @@ async function onAvailabilityChanged() {
 
 async function onGattServerDisconnected() {
     const maxretry = 3;
-    updateStatus("Reconnecting...")
-    for(let step = 0; step < maxretry; step++){
-        if(await reconnect()) return;
+    if(bluetoothDevice) {
+        updateStatus("Reconnecting...")
+        for(let step = 0; step < maxretry; step++){
+            if(await reconnect()) return;
+        }
     }
     updateStatus("Disconnected");
 }
