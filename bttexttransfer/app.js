@@ -81,10 +81,10 @@ function disconnect() {
         console.log("device", bluetoothDevice);
         return;
     } 
-    bluetoothDevice.onGattServerDisconnected = undefined;
+    bluetoothDevice.onGattServerDisconnected = "";
     bluetoothDevice.gatt.disconnect();
     bluetoothDevice = undefined;
-    updateDevicename("None");
+    updateDevicename("");
     updateStatus("Disconnected");
     //alert("BLE接続を切断しました。");
 }
