@@ -72,10 +72,17 @@ async function sendMessage() {
         let senddata;
         let response;
         while(i <= arrayBuf.length){
+            let arr;
             if(arrayBuf > i+maxchunk){
-                senddata = [0x01].push(arrayBuf.slice(i, i+maxchunk));
+                arr = new Uint8Array(maxchunk+1);
+                arr.set(arrayBuf.slice(i, i+maxchunk), 1);
+                arr[0] = 1;
+                senddata = arr;
             }else{
-                senddata = [0x00].push(arrayBuf.slice(i, arrayBuf.length));
+                arr = new Uint8Array(arrayBuf.length-i+1)
+                arr.set(arrayBuf.slice(i, arrayBuf.length), 1);
+                arr[0] = 0;
+                senddata = arr;
             }
             i += maxchunk; 
             response = await characteristic.writeValueWithoutResponse(senddata);
