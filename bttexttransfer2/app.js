@@ -64,7 +64,7 @@ async function sendMessage() {
     if(text === "") return;
     //alert("bluetoothDevice:"+bluetoothDevice+" connected:"+bluetoothDevice.gatt.connected+" characteristic:"+characteristic);
     if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
-    const text = document.querySelector("#message").value;
+    let text = document.querySelector("#message").value;
     //  alert(text);
     const arrayBuf = new TextEncoder().encode(text);
     try{
