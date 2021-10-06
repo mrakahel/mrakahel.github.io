@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>テキスト入力</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <header>
+  </header>
+  <div class="ad">
+    広告領域
+  </div>
+  <main>
+    <div class="main">
+      <div>
+        <button id="connect">接続</button>
+        <button id="disconnect">切断</button>
+        <button id="reconnect">再接続</button>
+        <div>
+          <p>Device Name: <span id="devicename"></span></p>
+          <p>Status: <span id="status">Disconnected</span></p>    
+        <h3>Message</h3>
+        <textarea id="message" rows="10" cols="100"></textarea>
+        <button id="send">送信</button>
+                
+      </div>  
+    </div>
+    
+  </main>
+  <div class="ad">
+    広告領域
+  </div>
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
+</body>
+</html>
