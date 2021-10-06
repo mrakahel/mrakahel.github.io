@@ -75,7 +75,7 @@ async function sendMessage() {
             if(arrayBuf > i+maxchunk){
                 senddata = [0x01].push(arrayBuf.slice(i, i+maxchunk-1));
             }else{
-                senddata = [0x00].push(arrayBuf);
+                senddata = [0x00].push(arrayBuf.slice(i, arrayBuf.length-i));
             }
             i += maxchunk; 
             response = await characteristic.writeValueWithoutResponse(senddata);
