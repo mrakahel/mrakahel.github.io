@@ -71,9 +71,9 @@ async function sendMessage() {
         let i = 0;
         let senddata;
         let response;
-        while(i <= arrayBuf.length){
+        while(i < arrayBuf.length){
             let arr;
-            if(arrayBuf.length > i+maxchunk){
+            if(i+maxchunk < arrayBuf.length){
                 arr = new Uint8Array(maxchunk+1);
                 arr.set(arrayBuf.slice(i, i+maxchunk), 1);
                 arr[0] = 1;
