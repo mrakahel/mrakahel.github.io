@@ -61,10 +61,10 @@ async function connect() {
 //メッセージを送信
 async function sendMessage() {
     const maxchunk = 200;
+    let text = document.querySelector("#message").value;
     if(text === "") return;
     //alert("bluetoothDevice:"+bluetoothDevice+" connected:"+bluetoothDevice.gatt.connected+" characteristic:"+characteristic);
     if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
-    let text = document.querySelector("#message").value;
     //  alert(text);
     const arrayBuf = new TextEncoder().encode(text);
     try{
