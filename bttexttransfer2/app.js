@@ -84,6 +84,7 @@ async function sendMessage() {
             response = await characteristic.writeValueWithoutResponse(senddata);
         }
         clearText();
+        onTextChange();
     }catch(error){
         alert(error);
     }
