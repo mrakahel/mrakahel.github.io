@@ -66,6 +66,7 @@ async function sendMessage() {
     //alert("bluetoothDevice:"+bluetoothDevice+" connected:"+bluetoothDevice.gatt.connected+" characteristic:"+characteristic);
     if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
     //  alert(text);
+    document.querySelector("#message").disabled = true;
     const arrayBuf = new TextEncoder().encode(text);
     try{
         let i = 0;
@@ -91,7 +92,7 @@ async function sendMessage() {
     }catch(error){
         alert(error);
     }
-
+    document.querySelector("#message").disabled = false;
 }
 
 //BLE切断処理
@@ -152,6 +153,13 @@ function clearText() {
     document.querySelector("#message").value = "";
 }
 
+function updateProgress(progress) {
+    let rate = progress / 100;
+    let elm = document.getElementById('progress');
+    elm.textContent =  progress + "%";
+    bar.animate(rate);
+}
+
 async function onAvailabilityChanged() {
     let availability = await navigator.bluetooth.getAvailability();
     if(!availability) {
@@ -171,6 +179,8 @@ async function onGattServerDisconnected() {
     updateStatus("Disconnected");
 }
 
+
+
 window.addEventListener('load', async e => {
     if("serviceWorker" in navigator){
         try{
@@ -185,6 +195,6 @@ window.addEventListener('load', async e => {
             console.log(`SW not registered`);
         }
     }
+    
     navigator.bluetooth.onavailabilitychanged = onAvailabilityChanged;
 });
-

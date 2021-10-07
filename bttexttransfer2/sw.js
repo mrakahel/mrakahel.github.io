@@ -45,39 +45,41 @@ self.addEventListener('fetch', event => {
     if(online){
         console.log(`online`);
         event.respondWith(
-        caches.match(event.request)
-            .then(
-            function (response) {
-            if (response) {
-                return response;
-            }
-            return fetch(event.request)
-                .then(function(response){
-                    cloneResponse = response.clone();
-                    if(response){
-                        if(response || response.status == 200){
-                            //キャッシュに追加
-                            caches.open(CACHE_NAME)
-                                .then(function(cache)
-                                {
-                                cache.put(event.request, cloneResponse)
-                                    .then(function(){
-                                        //正常にキャッシュ追加できたときの処理(必要であれば)
-                                        console.log(`cache added`);
+            caches.match(event.request)
+                .then(
+                function (response) {
+                //if (response) {
+                //    return response;
+                //}
+                return fetch(event.request)
+                    .then(function(response){
+                        //cloneRequest = request.clone();
+                        cloneResponse = response.clone();
+                        if(response){
+                            if(response || response.status == 200){
+                                //キャッシュに追加
+                                caches.open(CACHE_NAME)
+                                    .then(function(cache)
+                                    {
+                                    cache.put(event.request, cloneResponse)
+                                        .then(function(){
+                                            //正常にキャッシュ追加できたときの処理(必要であれば)
+                                            console.log(`cache added`);
+                                        });
                                     });
-                                });
-                        }else{
-                            //正常に取得できなかったときにハンドリングしてもよい
-                            console.log(`cache failed`);
+                            }else{
+                                //正常に取得できなかったときにハンドリングしてもよい
+                                console.log(`cache failed`);
+                                return response;
+                            }
                             return response;
                         }
-                        return response;
-                    }
-                }).catch(function(error) {
-                    //デバッグ用
-                    return console.log(error);
-                });
-            })
+                    }).catch(function(error) {
+                        //デバッグ用
+                        return console.log(error);
+                    });
+                }
+            )
         );
     }else{
         //オフラインのときの制御
