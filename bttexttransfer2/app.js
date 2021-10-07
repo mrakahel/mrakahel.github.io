@@ -10,7 +10,7 @@ var status;
 //ボタンイベントリスナー
 d3.select("#connect").on("click", connect);
 d3.select("#disconnect").on("click", disconnect);
-d3.select("#reconnect").on("click", reconnect);
+//d3.select("#reconnect").on("click", reconnect);
 d3.select("#send").on("click", sendMessage);
 
 var textArea = document.getElementById("message");
