@@ -17,6 +17,7 @@ d3.select("#disconnect").on("click", disconnect);
 d3.select("#reconnect").on("click", reconnect);
 d3.select("#send").on("click", sendMessage);
 
+var textArea = document.getElementById("message");
 
 //デバイスに接続する
 async function connect() {
@@ -179,7 +180,10 @@ async function onGattServerDisconnected() {
     updateStatus("Disconnected");
 }
 
-
+function onTextChange() {
+    const len = document.querySelector("#message").value.length;
+    document.querySelector("#textCnt").textContent = len;    
+}
 
 window.addEventListener('load', async e => {
     if("serviceWorker" in navigator){
@@ -195,6 +199,7 @@ window.addEventListener('load', async e => {
             console.log(`SW not registered`);
         }
     }
-    
+    textArea.oninput = onTextChange;
+
     navigator.bluetooth.onavailabilitychanged = onAvailabilityChanged;
 });
