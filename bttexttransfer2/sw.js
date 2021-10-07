@@ -12,15 +12,24 @@ const CACHE_KEYS = [
 
 self.addEventListener('install', event => {
     console.log(`install`);
-    event.waitUntil(
-        caches.open(CACHE_NAME) // 上記で指定しているキャッシュ名
-          .then(
-          function(cache){
-              return cache.addAll(urlsToCache); // 指定したリソースをキャッシュへ追加
-              // 1つでも失敗したらService Workerのインストールはスキップされる
-          })
-    );
+    return install(event);
 });
+
+const install = (event) => {
+    return event.waitUntil(
+      caches.open(CACHE_NAME)
+        .then(function(cache) {
+          urlsToCache.map(url => {
+            return fetch(new Request(url)).then(response => {
+              return cache.put(url, response);
+            });
+          })
+        })
+        .catch(function(err) {
+          console.log(err);
+        })
+    );
+  }
 
 self.addEventListener('activate', event => {
     event.waitUntil(
@@ -44,13 +53,12 @@ self.addEventListener('fetch', event => {
     //回線が使えるときの処理
     if(online){
         console.log(`online`);
+        return install(event);
         event.respondWith(
             caches.match(event.request)
                 .then(
                 function (response) {
-                //if (response) {
-                //    return response;
-                //}
+
                 return fetch(event.request)
                     .then(function(response){
                         //cloneRequest = request.clone();

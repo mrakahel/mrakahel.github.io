@@ -1,13 +1,9 @@
-
-//navigator.bluetooth.addEventListener('onavailabilitychanged', OnAvailabilityChanged);
   
 var bluetoothDevice;
 var characteristic;
 
 var TEXT_SERVICE_UUID = 'b07ff626-4b79-0001-89e5-fae40ab7e07f';
 var TEXT_CHARACTERISTIC_UUID = 'b07ff626-4b79-0004-89e5-fae40ab7e07f';
-//var TEXT_SERVICE_UUID = '0000aaa0-0000-1000-8000-aabbccddeeff'
-//var TEXT_CHARACTERISTIC_UUID = '0000aaa2-0000-1000-8000-aabbccddeeff';
 
 var status;
 
@@ -23,7 +19,6 @@ var textArea = document.getElementById("message");
 async function connect() {
     let options = {};
 
-    //options.acceptAllDevices = true;
     options.filters = [
         {services: [TEXT_SERVICE_UUID]}
     ];
@@ -64,9 +59,8 @@ async function sendMessage() {
     const maxchunk = 200;
     let text = document.querySelector("#message").value;
     if(text === "") return;
-    //alert("bluetoothDevice:"+bluetoothDevice+" connected:"+bluetoothDevice.gatt.connected+" characteristic:"+characteristic);
     if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
-    //  alert(text);
+
     document.querySelector("#message").disabled = true;
     const arrayBuf = new TextEncoder().encode(text);
     try{

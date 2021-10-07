@@ -25,7 +25,7 @@ textarea {
 	width: 100%;
 }
 textarea:disabled {
-	background: "ccc";
+	background: #808080;
 }
 
 div.progressContainer{
