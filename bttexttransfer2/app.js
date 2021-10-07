@@ -62,6 +62,7 @@ async function sendMessage() {
     if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
 
     document.querySelector("#message").disabled = true;
+    document.querySelector("#send").disabled = true;
     const arrayBuf = new TextEncoder().encode(text);
     try{
         let i = 0;
@@ -89,6 +90,7 @@ async function sendMessage() {
         alert(error);
     }
     document.querySelector("#message").disabled = false;
+    document.querySelector("#send").disabled = false;
 }
 
 //BLE切断処理
