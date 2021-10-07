@@ -187,6 +187,12 @@ async function onGattServerDisconnected() {
 function onTextChange() {
     const len = document.querySelector("#message").value.length;
     document.querySelector("#textCnt").textContent = len;    
+    const b = document.querySelector("#message").value.bytes();
+    document.querySelector("#textByte").textContent = b;    
+}
+
+String.prototype.bytes = function () {
+    return(encodeURIComponent(this).replace(/%../g,"x").length);
 }
 
 window.addEventListener('load', async e => {
