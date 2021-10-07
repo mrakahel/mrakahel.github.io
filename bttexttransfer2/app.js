@@ -1,9 +1,11 @@
   
 var bluetoothDevice;
 var characteristic;
+var vercharacteristic;
 
 var TEXT_SERVICE_UUID = 'b07ff626-4b79-0001-89e5-fae40ab7e07f';
 var TEXT_CHARACTERISTIC_UUID = 'b07ff626-4b79-0004-89e5-fae40ab7e07f';
+var VERSION_CHARACTERISTIC_UUID = 'b07ff626-4b79-0002-89e5-fae40ab7e07f';
 
 var status;
 
@@ -43,11 +45,14 @@ async function connect() {
         console.log("server", server);
         service = await server.getPrimaryService(TEXT_SERVICE_UUID);
         console.log("service", service);
+        chara = await service.getCharacteristic(VERSION_CHARACTERISTIC_UUID)
+        vercharacteristic = chara;
+        console.log("characteristic", chara);    
         chara = await service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
+        characteristic = chara;
         console.log("characteristic", chara);
         //alert("BLE接続が完了しました。");
         updateStatus('Connected');
-        characteristic = chara;    
     }catch(error){
         console.log(error);
         updateStatus(error);
@@ -82,7 +87,7 @@ async function sendMessage() {
                 senddata = arr;
             }
             i += maxchunk; 
-            response = await characteristic.writeValueWithoutResponse(senddata);
+            response = await characteristic.writeValueWithResponse(senddata);
         }
         clearText();
         onTextChange();
@@ -92,6 +97,8 @@ async function sendMessage() {
     document.querySelector("#message").disabled = false;
     document.querySelector("#send").disabled = false;
 }
+
+
 
 //BLE切断処理
 function disconnect() {
