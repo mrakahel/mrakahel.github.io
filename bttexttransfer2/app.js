@@ -73,21 +73,23 @@ async function sendMessage() {
         let i = 0;
         let senddata;
         let response;
+        let header = 10000000;
         while(i < arrayBuf.length){
             let arr;
             if(i+maxchunk < arrayBuf.length){
                 arr = new Uint8Array(maxchunk+1);
                 arr.set(arrayBuf.slice(i, i+maxchunk), 1);
-                arr[0] = 1;
+                arr[0] = header | 00000001;
                 senddata = arr;
             }else{
                 arr = new Uint8Array(arrayBuf.length-i+1)
                 arr.set(arrayBuf.slice(i, arrayBuf.length), 1);
-                arr[0] = 0;
+                arr[0] = header | 00000000;
                 senddata = arr;
             }
             i += maxchunk; 
             response = await characteristic.writeValueWithResponse(senddata);
+            header = header & 00000000;
         }
         clearText();
         onTextChange();
@@ -97,8 +99,6 @@ async function sendMessage() {
     document.querySelector("#message").disabled = false;
     document.querySelector("#send").disabled = false;
 }
-
-
 
 //BLE切断処理
 function disconnect() {
