@@ -73,23 +73,23 @@ async function sendMessage() {
         let i = 0;
         let senddata;
         let response;
-        let header = 10000000;
+        let header = 0x80;
         while(i < arrayBuf.length){
             let arr;
             if(i+maxchunk < arrayBuf.length){
                 arr = new Uint8Array(maxchunk+1);
                 arr.set(arrayBuf.slice(i, i+maxchunk), 1);
-                arr[0] = header | 00000001;
+                arr[0] = header | 0x01;
                 senddata = arr;
             }else{
                 arr = new Uint8Array(arrayBuf.length-i+1)
                 arr.set(arrayBuf.slice(i, arrayBuf.length), 1);
-                arr[0] = header | 00000000;
+                arr[0] = header | 0x00;
                 senddata = arr;
             }
             i += maxchunk; 
             response = await characteristic.writeValueWithResponse(senddata);
-            header = header & 00000000;
+            header = 0x00;
         }
         clearText();
         onTextChange();
