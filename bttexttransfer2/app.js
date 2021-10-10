@@ -115,11 +115,6 @@ async function sendData(header, buf) {
         let chunkCnt = 0;
         
         header = header | 0x80;
-        let arr = new Uint8Array(maxchunk+1);
-        arr.set(buf.slice(readidx, readidx+maxchunk), 1);
-        arr[0] = 0x80;
-        senddata = arr;
-        characteristic.writeValueWithNoResponse(senddata);
         while(readidx < buf.length){
             while(chunkCnt < chunkCheckInterval){
                 let arr;
