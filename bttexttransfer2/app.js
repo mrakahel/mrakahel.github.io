@@ -98,9 +98,10 @@ function bigUIntToBuffer(big) {
         arr = uint.buffer;
     }else{
         let uint = new Uint32Array(1)
-        uint[0] = big
+        uint[0] = big;
         arr.set(uint.buffer, 8);
     }
+    return arr.buffer;
 }
 
 async function sendData(header, buf) {
