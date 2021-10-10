@@ -73,9 +73,7 @@ async function sendMessage() {
     try{
         // frame cnt
         let header = 0x00;
-        let bigUInt = new BigUint64Array(1)
-        bigUInt[0] = arrayBuf.byteLength
-        let result = await sendData(header, bigUInt.buffer)
+        let result = await sendData(header, bigUIntToBuffer(arrayBuf.byteLength))
 
         // text data
         header = 0x10;
