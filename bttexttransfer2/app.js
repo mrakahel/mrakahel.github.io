@@ -142,7 +142,7 @@ async function sendData(header, buf) {
             }else{
                 // 継続データなし
                 arr = new Uint8Array(buf.byteLength-readidx+1)
-                arr.set(new Int8Array(bbuf.slice(readidx, buf.byteLength)), 1);
+                arr.set(new Int8Array(buf.slice(readidx, buf.byteLength)), 1);
                 arr[0] = header & 0xfe;
                 senddata = arr;
             }
