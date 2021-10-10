@@ -137,7 +137,7 @@ async function sendData(header, buf) {
                     senddata = arr;
                 }
                 readidx += maxchunk; 
-                characteristic.writeValueWithNoResponse(senddata);
+                characteristic.writeValueWithoutResponse(senddata);
                 header = header & 0x7f;
                 chunkCnt++;
             }
