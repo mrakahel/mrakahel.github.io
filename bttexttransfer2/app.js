@@ -118,7 +118,7 @@ async function sendData(header, buf) {
         while(readidx < buf.length){
             while(chunkCnt < chunkCheckInterval && readidx < buf.length){
                 let arr;
-                if((readidx+1)*maxchunk < buf.length){
+                if(readidx+maxchunk < buf.length){
                     // 継続データあり
                     arr = new Uint8Array(maxchunk+1);
                     arr.set(buf.slice(readidx, readidx+maxchunk), 1);
