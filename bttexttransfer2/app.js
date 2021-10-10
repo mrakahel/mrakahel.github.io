@@ -97,7 +97,7 @@ async function sendFile() {
     document.querySelector("#myfile").disabled = true;
     document.querySelector("#sendfile").disabled = true;
     const reader = new FileReader();
-    reader.onload = () => {
+    reader.onload = async () => {
         const arrayBuf = reader.result;
         try{
             // file name
