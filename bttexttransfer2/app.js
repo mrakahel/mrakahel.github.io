@@ -74,7 +74,7 @@ async function sendMessage() {
         // frame cnt
         let header = 0x00;
         let bigUInt = new BigUint64Array(1)
-        bigUInt[0] = arrayBuf.byteLength;
+        bigUInt[0] = arrayBuf.byteLength
         let result = await sendData(header, bigUInt.buffer)
 
         // text data
@@ -91,6 +91,19 @@ async function sendMessage() {
     document.querySelector("#send").disabled = false;
 }
 
+function bigUIntToBuffer(big) {
+    const bit32 = 4294967296;
+    let arr = new Uint8Array(8);
+    if(big > bit32) {
+        let uint = new BigUint64Array(1)
+        uint[0] = arrayBuf.byteLength
+        arr = uint.buffer;
+    }else{
+        let uint = new Uint32Array(1)
+        uint[0] = arrayBuf.byteLength
+        arr.set(uint.buffer, 8);
+    }
+}
 
 async function sendData(header, buf) {
     const maxchunk = 200;
@@ -101,9 +114,9 @@ async function sendData(header, buf) {
         let response;
         let isSuccess = true;
         let chunkCnt = 0;
-
+        
         header = header | 0x80;
-        arr = new Uint8Array(maxchunk+1);
+        let arr = new Uint8Array(maxchunk+1);
         arr.set(buf.slice(readidx, readidx+maxchunk), 1);
         arr[0] = 0x80;
         senddata = arr;
