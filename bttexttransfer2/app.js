@@ -116,7 +116,7 @@ async function sendData(header, buf) {
         
         header = header | 0x80;
         while(readidx < buf.length){
-            while(chunkCnt < chunkCheckInterval){
+            while(chunkCnt < chunkCheckInterval && readidx < buf.length){
                 let arr;
                 if((readidx+1)*maxchunk < buf.length){
                     // 継続データあり
