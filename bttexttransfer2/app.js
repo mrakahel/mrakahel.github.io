@@ -61,7 +61,6 @@ async function connect() {
 
 //テキストメッセージを送信
 async function sendMessage() {
-    const maxchunk = 200;
     let text = document.querySelector("#message").value;
     if(text === "") return;
     if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
@@ -71,12 +70,8 @@ async function sendMessage() {
     const arrayBuf = new TextEncoder().encode(text);
 
     try{
-        // frame cnt
-        let header = 0x00;
-        let result = await sendData(header, bigUIntToBuffer(arrayBuf.byteLength))
-
         // text data
-        header = 0x10;
+        let header = 0x10;
         result = await sendData(header, arrayBuf);
         if(result){
             clearText();
@@ -105,13 +100,11 @@ function bigUIntToBuffer(big) {
 }
 
 async function sendData(header, buf) {
-    const maxchunk = 200;
+    const maxchunk = 500;
     const chunkCheckInterval = 100;
     try{
         let readidx = 0;
         let senddata;
-        let response;
-        let isSuccess = false;
         let chunkCnt = 0;
         
         header = header | 0x80;
@@ -136,18 +129,7 @@ async function sendData(header, buf) {
                 header = header & 0x7f;
                 chunkCnt++;
             }
-            // retry max5回
-//            for(let step = 0; step < 5; step++){ 
-//                response = await characteristic.writeValueWithResponse(senddata);
-//                if(response == chunkCnt){
-//                    isSuccess = true;
-//                    break;
-//                }
-//            }
-            if(!isSuccess){
-                return false;
-            }
-            isSuccess = false;
+
             chunkCnt = 0;
         }
     }catch(error){
