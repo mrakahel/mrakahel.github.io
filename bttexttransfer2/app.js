@@ -111,7 +111,7 @@ async function sendData(header, buf) {
         let readidx = 0;
         let senddata;
         let response;
-        let isSuccess = true;
+        let isSuccess = false;
         let chunkCnt = 0;
         
         header = header | 0x80;
@@ -132,18 +132,18 @@ async function sendData(header, buf) {
                     senddata = arr;
                 }
                 readidx += maxchunk; 
-                characteristic.writeValueWithoutResponse(senddata);
+                await characteristic.writeValueWithResponse(senddata);
                 header = header & 0x7f;
                 chunkCnt++;
             }
             // retry max5回
-            for(let step = 0; step < 5; step++){ 
-                response = await characteristic.writeValueWithResponse(senddata);
-                if(response == chunkCnt){
-                    isSuccess = true;
-                    break;
-                }
-            }
+//            for(let step = 0; step < 5; step++){ 
+//                response = await characteristic.writeValueWithResponse(senddata);
+//                if(response == chunkCnt){
+//                    isSuccess = true;
+//                    break;
+//                }
+//            }
             if(!isSuccess){
                 return false;
             }
