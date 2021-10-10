@@ -272,8 +272,8 @@ window.addEventListener('load', async e => {
     }
     textArea.oninput = onTextChange;
     const f = document.getElementById('myfile');
-    f.addEventListener('change'), evt => {
+    f.addEventListener('change', evt => {
         myFile = evt.target.files[0];
-    }
+    });
     navigator.bluetooth.onavailabilitychanged = onAvailabilityChanged;
 });
