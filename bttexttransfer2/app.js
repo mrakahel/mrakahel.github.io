@@ -59,7 +59,7 @@ async function connect() {
     }
 }
 
-//メッセージを送信
+//テキストメッセージを送信
 async function sendMessage() {
     const maxchunk = 200;
     let text = document.querySelector("#message").value;
@@ -69,36 +69,86 @@ async function sendMessage() {
     document.querySelector("#message").disabled = true;
     document.querySelector("#send").disabled = true;
     const arrayBuf = new TextEncoder().encode(text);
+
     try{
-        let i = 0;
-        let senddata;
-        let response;
-        let header = 0x80;
-        while(i < arrayBuf.length){
-            let arr;
-            if(i+maxchunk < arrayBuf.length){
-                arr = new Uint8Array(maxchunk+1);
-                arr.set(arrayBuf.slice(i, i+maxchunk), 1);
-                arr[0] = header | 0x01;
-                senddata = arr;
-            }else{
-                arr = new Uint8Array(arrayBuf.length-i+1)
-                arr.set(arrayBuf.slice(i, arrayBuf.length), 1);
-                arr[0] = header | 0x00;
-                senddata = arr;
-            }
-            i += maxchunk; 
-            response = await characteristic.writeValueWithResponse(senddata);
-            header = 0x00;
+        // frame cnt
+        let header = 0x00;
+        let bigUInt = new BigUint64Array(1)
+        bigUInt[0] = arrayBuf.byteLength;
+        let result = await sendData(header, bigUInt.buffer)
+
+        // text data
+        header = 0x10;
+        result = await sendData(header, arrayBuf);
+        if(result){
+            clearText();
+            onTextChange();    
         }
-        clearText();
-        onTextChange();
     }catch(error){
         alert(error);
     }
     document.querySelector("#message").disabled = false;
     document.querySelector("#send").disabled = false;
 }
+
+
+async function sendData(header, buf) {
+    const maxchunk = 200;
+    const chunkCheckInterval = 100;
+    try{
+        let readidx = 0;
+        let senddata;
+        let response;
+        let isSuccess = true;
+        let chunkCnt = 0;
+
+        header = header | 0x80;
+        arr = new Uint8Array(maxchunk+1);
+        arr.set(buf.slice(readidx, readidx+maxchunk), 1);
+        arr[0] = 0x80;
+        senddata = arr;
+        characteristic.writeValueWithNoResponse(senddata);
+        while(readidx < buf.length){
+            while(chunkCnt < chunkCheckInterval){
+                let arr;
+                if((readidx+1)*maxchunk < buf.length){
+                    // 継続データあり
+                    arr = new Uint8Array(maxchunk+1);
+                    arr.set(buf.slice(readidx, readidx+maxchunk), 1);
+                    arr[0] = header | 0x01;
+                    senddata = arr;
+                }else{
+                    // 継続データなし
+                    arr = new Uint8Array(buf.length-readidx+1)
+                    arr.set(buf.slice(readidx, buf.length), 1);
+                    arr[0] = header & 0xfe;
+                    senddata = arr;
+                }
+                readidx += maxchunk; 
+                characteristic.writeValueWithNoResponse(senddata);
+                header = header & 0x7f;
+                chunkCnt++;
+            }
+            // retry max5回
+            for(let step = 0; step < 5; step++){ 
+                response = await characteristic.writeValueWithResponse(senddata);
+                if(response == chunkCnt){
+                    isSuccess = true;
+                    break;
+                }
+            }
+            if(!isSuccess){
+                return false;
+            }
+            isSuccess = false;
+            chunkCnt = 0;
+        }
+    }catch(error){
+        return false;
+    }
+    return true;
+}
+
 
 //BLE切断処理
 function disconnect() {
