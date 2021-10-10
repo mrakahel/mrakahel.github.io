@@ -130,10 +130,10 @@ async function sendData(header, buf) {
         let chunkCnt = 0;
         
         header = header | 0x80;
-        while(readidx < buf.length){
-            while(chunkCnt < chunkCheckInterval && readidx < buf.length){
+        while(readidx < buf.byteLength){
+            while(chunkCnt < chunkCheckInterval && readidx < buf.byteLength){
                 let arr;
-                if(readidx+maxchunk < buf.length){
+                if(readidx+maxchunk < buf.byteLength){
                     // 継続データあり
                     arr = new Uint8Array(maxchunk+1);
                     arr.set(buf.slice(readidx, readidx+maxchunk), 1);
@@ -141,8 +141,8 @@ async function sendData(header, buf) {
                     senddata = arr;
                 }else{
                     // 継続データなし
-                    arr = new Uint8Array(buf.length-readidx+1)
-                    arr.set(buf.slice(readidx, buf.length), 1);
+                    arr = new Uint8Array(buf.byteLength-readidx+1)
+                    arr.set(buf.slice(readidx, buf.byteLength), 1);
                     arr[0] = header & 0xfe;
                     senddata = arr;
                 }
