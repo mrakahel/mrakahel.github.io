@@ -106,7 +106,7 @@ async function sendFile() {
             const buf = new TextEncoder().encode(myFile.name);
             let result = await sendData(header, buf);
             // file data
-            let header = 0x30;
+            header = 0x30;
             result = await sendData(header, arrayBuf);
             if(result){        
             }
