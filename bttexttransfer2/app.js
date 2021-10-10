@@ -102,13 +102,14 @@ async function sendFile() {
         try{
             // file name
             let header = 0x20;
-            alert(myFile.name);
-            const buf = new TextEncoder().encode(myFile.name);
+            const buf = new TextEncoder().encode(targetFile.name);
             let result = await sendData(header, buf);
             // file data
             header = 0x30;
             result = await sendData(header, arrayBuf);
-            if(result){        
+            if(result){
+                const f = document.getElementById('myfile');
+                f.value = '';
             }
         }catch(error){
             alert(error);
@@ -118,44 +119,40 @@ async function sendFile() {
         document.querySelector("#myfile").disabled = false;
         document.querySelector("#sendfile").disabled = false;
     };
-    reader.readAsArrayBuffer(myFile);
+    reader.readAsArrayBuffer(targetFile);
 }
 
 async function sendData(header, buf) {
     const maxchunk = 500;
     const chunkCheckInterval = 100;
-    try{
-        let readidx = 0;
-        let senddata;
-        let chunkCnt = 0;
-        
-        header = header | 0x80;
-        while(readidx < buf.byteLength){
-            while(chunkCnt < chunkCheckInterval && readidx < buf.byteLength){
-                let arr;
-                if(readidx+maxchunk < buf.byteLength){
-                    // 継続データあり
-                    arr = new Uint8Array(maxchunk+1);
-                    arr.set(buf.slice(readidx, readidx+maxchunk), 1);
-                    arr[0] = header | 0x01;
-                    senddata = arr;
-                }else{
-                    // 継続データなし
-                    arr = new Uint8Array(buf.byteLength-readidx+1)
-                    arr.set(buf.slice(readidx, buf.byteLength), 1);
-                    arr[0] = header & 0xfe;
-                    senddata = arr;
-                }
-                readidx += maxchunk; 
-                await characteristic.writeValueWithResponse(senddata);
-                header = header & 0x7f;
-                chunkCnt++;
+    let readidx = 0;
+    let senddata;
+    let chunkCnt = 0;
+    
+    header = header | 0x80;
+    while(readidx < buf.byteLength){
+        while(chunkCnt < chunkCheckInterval && readidx < buf.byteLength){
+            let arr;
+            if(readidx+maxchunk < buf.byteLength){
+                // 継続データあり
+                arr = new Uint8Array(maxchunk+1);
+                arr.set(buf.slice(readidx, readidx+maxchunk), 1);
+                arr[0] = header | 0x01;
+                senddata = arr;
+            }else{
+                // 継続データなし
+                arr = new Uint8Array(buf.byteLength-readidx+1)
+                arr.set(buf.slice(readidx, buf.byteLength), 1);
+                arr[0] = header & 0xfe;
+                senddata = arr;
             }
-
-            chunkCnt = 0;
+            readidx += maxchunk; 
+            await characteristic.writeValueWithResponse(senddata);
+            header = header & 0x7f;
+            chunkCnt++;
         }
-    }catch(error){
-        return false;
+
+        chunkCnt = 0;
     }
     return true;
 }
@@ -273,7 +270,7 @@ window.addEventListener('load', async e => {
     textArea.oninput = onTextChange;
     const f = document.getElementById('myfile');
     f.addEventListener('change', evt => {
-        myFile = evt.target.files[0];
+        targetFile = evt.target.files[0];
     });
     navigator.bluetooth.onavailabilitychanged = onAvailabilityChanged;
 });
