@@ -94,11 +94,11 @@ function bigUIntToBuffer(big) {
     let arr = new Uint8Array(8);
     if(big > bit32) {
         let uint = new BigUint64Array(1)
-        uint[0] = arrayBuf.byteLength
+        uint[0] = big;
         arr = uint.buffer;
     }else{
         let uint = new Uint32Array(1)
-        uint[0] = arrayBuf.byteLength
+        uint[0] = big
         arr.set(uint.buffer, 8);
     }
 }
