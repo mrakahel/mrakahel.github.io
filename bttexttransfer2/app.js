@@ -14,8 +14,11 @@ d3.select("#connect").on("click", connect);
 d3.select("#disconnect").on("click", disconnect);
 //d3.select("#reconnect").on("click", reconnect);
 d3.select("#send").on("click", sendMessage);
+d3.select("#sendfile").on("click", sendFile);
+
 
 var textArea = document.getElementById("message");
+var targetFile;
 
 //デバイスに接続する
 async function connect() {
@@ -72,7 +75,7 @@ async function sendMessage() {
     try{
         // text data
         let header = 0x10;
-        result = await sendData(header, arrayBuf);
+        let result = await sendData(header, arrayBuf);
         if(result){
             clearText();
             onTextChange();    
@@ -84,19 +87,38 @@ async function sendMessage() {
     document.querySelector("#send").disabled = false;
 }
 
-function bigUIntToBuffer(big) {
-    const bit32 = 4294967296;
-    let arr = new Uint8Array(8);
-    if(big > bit32) {
-        let uint = new BigUint64Array(1)
-        uint[0] = big;
-        arr = uint.buffer;
-    }else{
-        let uint = new Uint32Array(1)
-        uint[0] = big;
-        arr.set(uint.buffer, 8);
-    }
-    return arr.buffer;
+//ファイルを送信
+async function sendFile() {
+    if(typeof(myFile) === undefined) return;
+    if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
+
+    document.querySelector("#message").disabled = true;
+    document.querySelector("#send").disabled = true;
+    document.querySelector("#myfile").disabled = true;
+    document.querySelector("#sendfile").disabled = true;
+    const reader = new FileReader();
+    reader.onload = () => {
+        const arrayBuf = reader.result;
+        try{
+            // file name
+            let header = 0x20;
+            alert(myFile.name);
+            const buf = new TextEncoder().encode(myFile.name);
+            let result = await sendData(header, buf);
+            // file data
+            let header = 0x30;
+            result = await sendData(header, arrayBuf);
+            if(result){        
+            }
+        }catch(error){
+            alert(error);
+        }
+        document.querySelector("#message").disabled = false;
+        document.querySelector("#send").disabled = false;
+        document.querySelector("#myfile").disabled = false;
+        document.querySelector("#sendfile").disabled = false;
+    };
+    reader.readAsArrayBuffer(myFile);
 }
 
 async function sendData(header, buf) {
@@ -249,6 +271,9 @@ window.addEventListener('load', async e => {
         }
     }
     textArea.oninput = onTextChange;
-
+    const f = document.getElementById('myfile');
+    f.addEventListener('change'), evt => {
+        myFile = evt.target.files[0];
+    }
     navigator.bluetooth.onavailabilitychanged = onAvailabilityChanged;
 });
