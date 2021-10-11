@@ -22,7 +22,7 @@ var circle = new ldBar(".pgCircle");
 var remainTime = document.getElementById("remainTime");
 var textArea = document.getElementById("message");
 var targetFile;
-const chunkCheckInterval = 30;
+const chunkCheckInterval = 50;
 const maxchunk = 500;
 
 //デバイスに接続する
