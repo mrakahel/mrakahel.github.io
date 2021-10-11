@@ -70,7 +70,7 @@ async function sendMessage() {
     if(text === "") return;
     if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
 
-    document.querySelector("#message").disabled = true;
+    //document.querySelector("#message").disabled = true;
     document.querySelector("#send").disabled = true;
     $('.modal').show();
     $('.overlay').show();
@@ -87,7 +87,7 @@ async function sendMessage() {
     }catch(error){
         alert(error);
     }
-    document.querySelector("#message").disabled = false;
+    //document.querySelector("#message").disabled = false;
     document.querySelector("#send").disabled = false;
     $('.modal').hide();
     $('.overlay').hide();
@@ -98,7 +98,7 @@ async function sendFile() {
     if(typeof(myFile) === undefined) return;
     if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
     cancelreq = false;
-    document.querySelector("#message").disabled = true;
+    //document.querySelector("#message").disabled = true;
     document.querySelector("#send").disabled = true;
     document.querySelector("#myfile").disabled = true;
     document.querySelector("#sendfile").disabled = true;
@@ -122,7 +122,7 @@ async function sendFile() {
         }catch(error){
             alert(error);
         }
-        document.querySelector("#message").disabled = false;
+        //document.querySelector("#message").disabled = false;
         document.querySelector("#send").disabled = false;
         document.querySelector("#myfile").disabled = false;
         document.querySelector("#sendfile").disabled = false;
@@ -140,12 +140,7 @@ async function sendData(header, buf) {
     let chunkCnt = 0;
     let progress = 0;
     header = header | 0x80;
-    let circle = new ldBar(".pgCircle", {
-        "stroke": '#f00',
-        "stroke-width": 10,
-        "preset": "circle",
-        "value": 0
-       });
+    let circle = new ldBar(".pgCircle");
     while(readidx < buf.byteLength){
         progress = Math.floor(readidx*100/buf.byteLength);
         progress = progress > 100 ? 100 : progress;
