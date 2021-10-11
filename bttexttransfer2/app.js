@@ -23,6 +23,7 @@ var remainTime = document.getElementById("remainTime");
 var textArea = document.getElementById("message");
 var targetFile;
 const chunkCheckInterval = 30;
+const maxchunk = 500;
 
 //デバイスに接続する
 async function connect() {
@@ -137,8 +138,6 @@ async function sendFile() {
 }
 
 async function sendData(header, buf) {
-    const maxchunk = 500;
-
     let readidx = 0;
     let senddata;
     let chunkCnt = 0;
@@ -230,7 +229,7 @@ async function reconnect() {
 function getRemainTime(lastTime, now, sentLength, maxLength) {
     if(sentLength == 0) return "";
     const diff = (now - lastTime) / 1000; // 経過時間
-    const remain = diff / chunkCheckInterval * (maxLength-sentLength) / chunkCheckInterval; // 予想合計時間
+    const remain = diff / (maxchunk*chunkCheckInterval) * (maxLength-sentLength); // 予想合計時間
     return remain > 60 ? `残り約${Math.floor(remain/60)}分${(remain%60)}秒` : `残り約${remain}秒`
 }
 
