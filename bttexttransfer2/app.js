@@ -81,12 +81,12 @@ async function sendMessage() {
 
     try{
         // byte length
-        header = 0x00;
+        let header = 0x00;
         let int32 = new Int32Array(1);
         int32[0] = arrayBuf.byteLength; 
         result = await sendData(header, int32.buffer);
         // text data
-        let header = 0x10;
+        header = 0x10;
         let result = await sendData(header, arrayBuf);
         if(result){
             clearText();
