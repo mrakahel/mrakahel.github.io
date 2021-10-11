@@ -90,3 +90,7 @@ div.progressContainer{
     stroke-linecap: round;
     filter:url(#custom-shadow);
 }
+#remainTime {
+	color: #09f;
+    font-size: 2.5em;
+}

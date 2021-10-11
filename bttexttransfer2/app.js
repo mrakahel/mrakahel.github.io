@@ -225,11 +225,12 @@ async function reconnect() {
 }
 
 function getRemainTime(startTime, sentLength, maxLength) {
+    if(sentLength == 0) return "";
     const now = new Date();
     const diff = (now.getTime() - startTime) / 1000; // 経過時間
     const total = diff / sentLength * maxLength; // 予想合計時間
     const remain = Math.ceil(total - diff);
-    return remain > 60 ? `残り約${(remain/60)}分${(remain%60)}秒` : `残り約${remain}秒`
+    return remain > 60 ? `残り約${Math.floor(remain/60)}分${(remain%60)}秒` : `残り約${remain}秒`
 }
 
 function sendCancel() {
