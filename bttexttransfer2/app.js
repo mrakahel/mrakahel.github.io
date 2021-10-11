@@ -134,7 +134,7 @@ async function sendFile() {
 
 async function sendData(header, buf) {
     const maxchunk = 500;
-    const chunkCheckInterval = 100;
+    const chunkCheckInterval = 30;
     let readidx = 0;
     let senddata;
     let chunkCnt = 0;
