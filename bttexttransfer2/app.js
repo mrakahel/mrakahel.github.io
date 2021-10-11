@@ -22,6 +22,7 @@ var circle = new ldBar(".pgCircle");
 var remainTime = document.getElementById("remainTime");
 var textArea = document.getElementById("message");
 var targetFile;
+const chunkCheckInterval = 30;
 
 //デバイスに接続する
 async function connect() {
@@ -137,19 +138,21 @@ async function sendFile() {
 
 async function sendData(header, buf) {
     const maxchunk = 500;
-    const chunkCheckInterval = 30;
+
     let readidx = 0;
     let senddata;
     let chunkCnt = 0;
     let progress = 0;
-    let start = new Date().getTime();
+    let last = new Date().getTime();
     header = header | 0x80;
     
     while(readidx < buf.byteLength){
         progress = Math.floor(readidx*100/buf.byteLength);
         progress = progress > 100 ? 100 : progress;
         circle.set(progress);
-        remainTime.innerText = getRemainTime(start, readidx, buf.byteLength);
+        let now = new Date().getTime();
+        remainTime.innerText = getRemainTime(last, now, readidx, buf.byteLength);
+        last = now;
         while(chunkCnt < chunkCheckInterval && readidx < buf.byteLength){
             let arr;
             if(cancelreq){
@@ -224,12 +227,10 @@ async function reconnect() {
     return false;
 }
 
-function getRemainTime(startTime, sentLength, maxLength) {
+function getRemainTime(lastTime, now, sentLength, maxLength) {
     if(sentLength == 0) return "";
-    const now = new Date();
-    const diff = (now.getTime() - startTime) / 1000; // 経過時間
-    const total = diff / sentLength * maxLength; // 予想合計時間
-    const remain = Math.ceil(total - diff);
+    const diff = (now.getTime() - lastTime) / 1000; // 経過時間
+    const remain = diff / chunkCheckInterval * (maxLength-sentLength); // 予想合計時間
     return remain > 60 ? `残り約${Math.floor(remain/60)}分${(remain%60)}秒` : `残り約${remain}秒`
 }
 
