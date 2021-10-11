@@ -18,7 +18,8 @@ d3.select("#send").on("click", sendMessage);
 d3.select("#sendfile").on("click", sendFile);
 d3.select("#closeModal").on("click", sendCancel);
 
-
+var circle = new ldBar(".pgCircle");
+var remainTime = document.getElementById("remainTime");
 var textArea = document.getElementById("message");
 var targetFile;
 
@@ -91,6 +92,7 @@ async function sendMessage() {
     document.querySelector("#send").disabled = false;
     $('.modal').hide();
     $('.overlay').hide();
+    circle.set(0);
 }
 
 //ファイルを送信
@@ -128,6 +130,7 @@ async function sendFile() {
         document.querySelector("#sendfile").disabled = false;
         $('.modal').hide();
         $('.overlay').hide();
+        circle.set(0);
     };
     reader.readAsArrayBuffer(targetFile);
 }
@@ -139,12 +142,14 @@ async function sendData(header, buf) {
     let senddata;
     let chunkCnt = 0;
     let progress = 0;
+    let start = new Date().getTime();
     header = header | 0x80;
-    let circle = new ldBar(".pgCircle");
+    
     while(readidx < buf.byteLength){
         progress = Math.floor(readidx*100/buf.byteLength);
         progress = progress > 100 ? 100 : progress;
         circle.set(progress);
+        remainTime.text = getRemainTime(start, readidx, buf.byteLength);
         while(chunkCnt < chunkCheckInterval && readidx < buf.byteLength){
             let arr;
             if(cancelreq){
@@ -219,6 +224,14 @@ async function reconnect() {
     return false;
 }
 
+function getRemainTime(startTime, sentLength, maxLength) {
+    const date = new Date();
+    const diff = Math.floor((date.getTime() - startTime) / 1000); // 経過時間
+    const total = diff / maxLength * sentLength; // 予想合計時間
+    const remain = total - diff;
+    return remain > 60 ? `残り約${(remain/60)}分${(remain%60)}秒` : `残り約${remain}秒`
+}
+
 function sendCancel() {
     cancelreq = true;
 }
@@ -235,13 +248,6 @@ function updateDevicename(name) {
 
 function clearText() {
     document.querySelector("#message").value = "";
-}
-
-function updateProgress(progress) {
-    let rate = progress / 100;
-    let elm = document.getElementById('progress');
-    elm.textContent =  progress + "%";
-    bar.animate(rate);
 }
 
 async function onAvailabilityChanged() {
