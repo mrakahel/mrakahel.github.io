@@ -143,7 +143,7 @@ async function sendData(header, buf) {
     while(readidx < buf.byteLength){
         progress = Math.floor(readidx*100/buf.byteLength);
         progress = progress > 100 ? 100 : progress;
-        $('ldBar').set(progress);
+        $('.ldBar').set(progress);
         while(chunkCnt < chunkCheckInterval && readidx < buf.byteLength){
             let arr;
             if(cancelreq){
