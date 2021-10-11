@@ -149,7 +149,7 @@ async function sendData(header, buf) {
         progress = Math.floor(readidx*100/buf.byteLength);
         progress = progress > 100 ? 100 : progress;
         circle.set(progress);
-        remainTime.text = getRemainTime(start, readidx, buf.byteLength);
+        remainTime.innerText = getRemainTime(start, readidx, buf.byteLength);
         while(chunkCnt < chunkCheckInterval && readidx < buf.byteLength){
             let arr;
             if(cancelreq){
