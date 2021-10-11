@@ -16,3 +16,7 @@
 .ldBar.no-percent .ldBar-label:after {
   content: "";
 }
+.pgCircle{
+  width: 50;
+  height: 50%;
+}

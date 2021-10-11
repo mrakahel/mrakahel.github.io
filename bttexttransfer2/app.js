@@ -288,6 +288,9 @@ window.addEventListener('load', async e => {
             console.log(`SW not registered`);
         }
     }
+    $('.modal').show();
+    $('.overlay').show();
+    let circle = new ldBar(".pgCircle");
     textArea.oninput = onTextChange;
     const f = document.getElementById('myfile');
     f.addEventListener('change', evt => {
