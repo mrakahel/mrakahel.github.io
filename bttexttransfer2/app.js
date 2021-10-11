@@ -143,7 +143,8 @@ async function sendData(header, buf) {
     while(readidx < buf.byteLength){
         progress = Math.floor(readidx*100/buf.byteLength);
         progress = progress > 100 ? 100 : progress;
-        $('.ldBar').set(progress);
+        let circle = document.getElementById('ldCircle').ldBar;
+        circle.set(progress);
         while(chunkCnt < chunkCheckInterval && readidx < buf.byteLength){
             let arr;
             if(cancelreq){
