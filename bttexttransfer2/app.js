@@ -80,6 +80,11 @@ async function sendMessage() {
     const arrayBuf = new TextEncoder().encode(text);
 
     try{
+        // byte length
+        header = 0x00;
+        let int32 = new Int32Array(1);
+        int32[0] = arrayBuf.byteLength; 
+        result = await sendData(header, int32.buffer);
         // text data
         let header = 0x10;
         let result = await sendData(header, arrayBuf);
@@ -116,6 +121,12 @@ async function sendFile() {
             let header = 0x20;
             const buf = new TextEncoder().encode(targetFile.name);
             let result = await sendData(header, buf);
+            // byte length
+            header = 0x00;
+            let int32 = new Int32Array(1);
+            int32[0] = arrayBuf.byteLength; 
+            result = await sendData(header, int32.buffer);
+            
             // file data
             header = 0x30;
             result = await sendData(header, arrayBuf);
