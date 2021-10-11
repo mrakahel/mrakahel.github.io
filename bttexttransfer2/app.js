@@ -218,6 +218,10 @@ async function reconnect() {
     return false;
 }
 
+function sendCancel() {
+    cancelreq = true;
+}
+
 function updateStatus(state) {
     let elm = document.getElementById('status');
     elm.textContent = state;
