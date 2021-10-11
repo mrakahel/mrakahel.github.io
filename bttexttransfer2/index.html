@@ -6,6 +6,7 @@
   <title>テキスト入力</title>
   <link rel="manifest" href="site.webmanifest">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="loading-bar.css">
   <script src="app.js" defer></script>
 </head>
 
@@ -32,7 +33,13 @@
         <br>
         <input id="myfile" type="file"/>
         <button id="sendfile">ファイル送信</button>
-
+        <div class="modal">
+          <h2>モーダルダイアログ</h2>
+          <p>これはモーダルダイアログです。</p>
+          <div class="ldBar label-center" data-value="35" data-preset="circle"></div>
+          <button type="button" class="closeModal">キャンセル</button>
+      </div>
+      <div class="overlay"></div>
       </div>  
     </div>
     
@@ -41,5 +48,7 @@
     広告領域
   </div>
 <script src="//cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="loading-bar.js"></script>
 </body>
 </html>

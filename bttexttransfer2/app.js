@@ -96,6 +96,8 @@ async function sendFile() {
     document.querySelector("#send").disabled = true;
     document.querySelector("#myfile").disabled = true;
     document.querySelector("#sendfile").disabled = true;
+    document.getElementsByClassName('modal').show();
+    document.getElementsByClassName('overlay').show();
     const reader = new FileReader();
     reader.onload = async () => {
         const arrayBuf = reader.result;
@@ -118,6 +120,8 @@ async function sendFile() {
         document.querySelector("#send").disabled = false;
         document.querySelector("#myfile").disabled = false;
         document.querySelector("#sendfile").disabled = false;
+        document.getElementsByClassName('modal').hide();
+        document.getElementsByClassName('overlay').hide();
     };
     reader.readAsArrayBuffer(targetFile);
 }
