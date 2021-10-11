@@ -8,6 +8,7 @@ var TEXT_CHARACTERISTIC_UUID = 'b07ff626-4b79-0004-89e5-fae40ab7e07f';
 var VERSION_CHARACTERISTIC_UUID = 'b07ff626-4b79-0002-89e5-fae40ab7e07f';
 
 var status;
+var cancelreq = false;
 
 //ボタンイベントリスナー
 d3.select("#connect").on("click", connect);
@@ -15,6 +16,7 @@ d3.select("#disconnect").on("click", disconnect);
 //d3.select("#reconnect").on("click", reconnect);
 d3.select("#send").on("click", sendMessage);
 d3.select("#sendfile").on("click", sendFile);
+d3.select("#closeModal").on("click", sendCancel);
 
 
 var textArea = document.getElementById("message");
@@ -70,6 +72,8 @@ async function sendMessage() {
 
     document.querySelector("#message").disabled = true;
     document.querySelector("#send").disabled = true;
+    $('.modal').show();
+    $('.overlay').show();
     const arrayBuf = new TextEncoder().encode(text);
 
     try{
@@ -85,13 +89,15 @@ async function sendMessage() {
     }
     document.querySelector("#message").disabled = false;
     document.querySelector("#send").disabled = false;
+    $('.modal').hide();
+    $('.overlay').hide();
 }
 
 //ファイルを送信
 async function sendFile() {
     if(typeof(myFile) === undefined) return;
     if (!bluetoothDevice || !bluetoothDevice.gatt.connected || !characteristic) return ;
-
+    cancelreq = false;
     document.querySelector("#message").disabled = true;
     document.querySelector("#send").disabled = true;
     document.querySelector("#myfile").disabled = true;
@@ -132,11 +138,17 @@ async function sendData(header, buf) {
     let readidx = 0;
     let senddata;
     let chunkCnt = 0;
-    
+    let progress = 0;
     header = header | 0x80;
     while(readidx < buf.byteLength){
+        progress = Math.floor(readidx*100/buf.byteLength);
+        progress = progress > 100 ? 100 : progress;
+        $('ldBar').set(progress);
         while(chunkCnt < chunkCheckInterval && readidx < buf.byteLength){
             let arr;
+            if(cancelreq){
+                return false;
+            }
             if(readidx+maxchunk < buf.byteLength){
                 // 継続データあり
                 arr = new Uint8Array(maxchunk+1);

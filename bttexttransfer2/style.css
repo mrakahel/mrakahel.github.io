@@ -73,9 +73,24 @@ div.progressContainer{
 	left: 0;
 	z-index: 1;
 }
+.ldBar {
+	width: 100%;
+	height: 100%;
+}
 .ldBar-label {
     color: #09f;
     font-family: 'varela round';
     font-size: 2.5em;
     font-weight: 900;
+}
+.ldBar path.mainline {
+    stroke-width: 10;
+    stroke: #09f;
+    stroke-linecap: round;
+}
+.ldBar path.baseline {
+    stroke-width: 14;
+    stroke: #f1f2f3;
+    stroke-linecap: round;
+    filter:url(#custom-shadow);
 }
