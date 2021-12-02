@@ -67,18 +67,21 @@ $(function() {
     });
 });
 
-function startDrawTouch(event){
-    event.preventDefault();
+function startDrawTouch(e){
+    if(e.changedTouches.length > 1){}
+       return;
+    }
+    e.preventDefault();
     // 描画前処理をおこないマウス押下状態にする。
     beforeDraw();
     mouseDown = true;
 
-    let touch = event.changedTouches[0];
+    let touch = e.changedTouches[0];
 
     // クライアント領域からマウス開始位置座標を取得
-    wbound = event.target.getBoundingClientRect() ;
-    stX = touch.pageX - wbound.left;
-    stY = touch.pageY - wbound.top;
+    wbound = e.target.getBoundingClientRect() ;
+    stX = touch.clientX - wbound.left;
+    stY = touch.clientY - wbound.top;
 
     // キャンバス情報を取得
     canvas = document.getElementById("canvas");
@@ -87,14 +90,17 @@ function startDrawTouch(event){
     drawCount++;
     // Send 
 }
-function drawingTouch(event){
-    event.preventDefault();
-    let touch = event.changedTouches[0];
+function drawingTouch(e){
+    if(e.changedTouches.length > 1){}
+       return;
+    }
+    e.preventDefault();
+    let touch = e.changedTouches[0];
 
     // マウスボタンが押されていれば描画中と判断
     if (mouseDown){
-        x = touch.pageX - wbound.left;
-        y = touch.pageY - wbound.top;
+        x = touch.clientX - wbound.left;
+        y = touch.clientY - wbound.top;
         draw(x, y);
     
         // Send 
