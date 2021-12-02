@@ -29,7 +29,7 @@ $(function() {
         canvas.addEventListener('mouseup', endDraw, false);
         canvas.addEventListener('touchstart', startDrawTouch, false);
         canvas.addEventListener('touchmove', drawingTouch, false);
-        canvas.addEventListener('touchend', endDrawTouch, false);
+        canvas.addEventListener('touchend', endDraw, false);
     });
 
     //
@@ -77,18 +77,7 @@ function startDrawTouch(e){
     mouseDown = true;
 
     let touch = e.changedTouches[0];
-
-    // クライアント領域からマウス開始位置座標を取得
-    wbound = e.target.getBoundingClientRect() ;
-    stX = touch.clientX - wbound.left;
-    stY = touch.clientY - wbound.top;
-
-    // キャンバス情報を取得
-    canvas = document.getElementById("canvas");
-    context = canvas.getContext("2d");
-
-    drawCount++;
-    // Send 
+    startDraw(touch);
 }
 
 function drawingTouch(e){
@@ -97,25 +86,7 @@ function drawingTouch(e){
     }
     e.preventDefault();
     let touch = e.changedTouches[0];
-
-    // マウスボタンが押されていれば描画中と判断
-    if (mouseDown){
-        x = touch.clientX - wbound.left;
-        y = touch.clientY - wbound.top;
-        draw(x, y);
-    
-        // Send 
-    }
-}
-function endDrawTouch(){
-    // マウスボタンが押されていれば描画中と判断
-    if (mouseDown){
-        context.globalCompositeOperation = 'source-over';
-        context.setLineDash([]);
-        mouseDown = false;
-    }
-
-    // Send 
+    drawing(touch);
 
 }
 
