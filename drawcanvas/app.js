@@ -78,7 +78,7 @@ function startDrawTouch(event){
     // クライアント領域からマウス開始位置座標を取得
     wbound = event.target.getBoundingClientRect() ;
     stX = touch.pageX - wbound.left;
-    stY = touch.paegY - wbound.top;
+    stY = touch.pageY - wbound.top;
 
     // キャンバス情報を取得
     canvas = document.getElementById("canvas");
