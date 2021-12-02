@@ -68,10 +68,11 @@ $(function() {
 });
 
 function startDrawTouch(event){
+    event.preventDefault();
     startDraw(event.changeTouches[0]);
 }
 function drawingTouch(event){
-    e.preventDefault();
+    event.preventDefault();
     drawing(event.changeTouches[0]);
 }
 function endDrawTouch(event){
