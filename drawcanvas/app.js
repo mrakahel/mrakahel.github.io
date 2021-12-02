@@ -71,10 +71,11 @@ function startDrawTouch(event){
     startDraw(event.changeTouches[0]);
 }
 function drawingTouch(event){
-    drawing(event.changeTouches[0])
+    e.preventDefault();
+    drawing(event.changeTouches[0]);
 }
 function endDrawTouch(event){
-    endDraw(event.changeTouches[0])
+    endDraw(event.changeTouches[0]);
 }
 
 //
