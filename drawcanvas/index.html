@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>キャンバス</title>
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <header>
+  </header>
+  <main>
+    <div class="main">
+      <div>
+        <canvas id="canvas" style="border:1px solid gray;"></canvas>
+      </div>
+      <div>
+        <input type="button" id="undo" name="undo" value="undo">
+        <input type="button" id="redo" name="redo" value="redo">
+      </div>
+      <span id="count"></span>
+      <span id="x"></span>
+      <span id="y"></span>
+    </div>
+    
+  </main>
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="loading-bar.js"></script>
+</body>
+</html>
