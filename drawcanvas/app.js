@@ -68,7 +68,7 @@ $(function() {
 });
 
 function startDrawTouch(e){
-    if(e.changedTouches.length > 1){}
+    if(e.changedTouches.length > 1){
        return;
     }
     e.preventDefault();
@@ -90,8 +90,9 @@ function startDrawTouch(e){
     drawCount++;
     // Send 
 }
+
 function drawingTouch(e){
-    if(e.changedTouches.length > 1){}
+    if(e.changedTouches.length > 1){
        return;
     }
     e.preventDefault();
@@ -106,7 +107,7 @@ function drawingTouch(e){
         // Send 
     }
 }
-function endDrawTouch(event){
+function endDrawTouch(){
     // マウスボタンが押されていれば描画中と判断
     if (mouseDown){
         context.globalCompositeOperation = 'source-over';
