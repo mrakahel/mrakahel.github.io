@@ -69,14 +69,14 @@ $(function() {
 
 function startDrawTouch(event){
     event.preventDefault();
-    startDraw(event.changeTouches[0]);
+    startDraw(event.changedTouches[0]);
 }
 function drawingTouch(event){
     event.preventDefault();
-    drawing(event.changeTouches[0]);
+    drawing(event.changedTouches[0]);
 }
 function endDrawTouch(event){
-    endDraw(event.changeTouches[0]);
+    endDraw(event.changedTouches[0]);
 }
 
 //
