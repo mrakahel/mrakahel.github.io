@@ -94,7 +94,7 @@ function drawingTouch(event){
     // マウスボタンが押されていれば描画中と判断
     if (mouseDown){
         x = touch.pageX - wbound.left;
-        y = touch.paegY - wbound.top;
+        y = touch.pageY - wbound.top;
         draw(x, y);
     
         // Send 
