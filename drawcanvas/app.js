@@ -69,14 +69,47 @@ $(function() {
 
 function startDrawTouch(event){
     event.preventDefault();
-    startDraw(event.changedTouches[0]);
+    // 描画前処理をおこないマウス押下状態にする。
+    beforeDraw();
+    mouseDown = true;
+
+    let touch = event.changedTouches[0];
+
+    // クライアント領域からマウス開始位置座標を取得
+    wbound = event.target.getBoundingClientRect() ;
+    stX = touch.pageX - wbound.left;
+    stY = touch.paegY - wbound.top;
+
+    // キャンバス情報を取得
+    canvas = document.getElementById("canvas");
+    context = canvas.getContext("2d");
+
+    drawCount++;
+    // Send 
 }
 function drawingTouch(event){
     event.preventDefault();
-    drawing(event.changedTouches[0]);
+    let touch = event.changedTouches[0];
+
+    // マウスボタンが押されていれば描画中と判断
+    if (mouseDown){
+        x = touch.pageX - wbound.left;
+        y = touch.paegY - wbound.top;
+        draw(x, y);
+    
+        // Send 
+    }
 }
 function endDrawTouch(event){
-    endDraw(event.changedTouches[0]);
+    // マウスボタンが押されていれば描画中と判断
+    if (mouseDown){
+        context.globalCompositeOperation = 'source-over';
+        context.setLineDash([]);
+        mouseDown = false;
+    }
+
+    // Send 
+
 }
 
 //
