@@ -199,7 +199,7 @@ function drawing(event){
             buf = new ArrayBuffer(7);
             buf[0] = 0x00;
             arr_n = new Uint16Array(1);
-            arr_n = num;
+            arr_n = drawCount;
             arr_x = new Uint16Array(1);
             arr_x = Math.floor(x);
             arr_y = new Uint16Array(1);
