@@ -6,8 +6,8 @@ let bluetoothDevice;
 let characteristic;
 let vercharacteristic;
 
-let TEXT_SERVICE_UUID = 'b07ff626-4b78-0001-89e5-fae40ab7e07f';
-let TEXT_CHARACTERISTIC_UUID = 'b07ff626-4b78-0004-89e5-fae40ab7e07f';
+let INK_SERVICE_UUID = 'b07ff626-4b78-0001-89e5-fae40ab7e07f';
+let WRITE_CHARACTERISTIC_UUID = 'b07ff626-4b78-0004-89e5-fae40ab7e07f';
 let VERSION_CHARACTERISTIC_UUID = 'b07ff626-4b78-0002-89e5-fae40ab7e07f';
 
 let status;
@@ -28,7 +28,7 @@ async function connect() {
     let options = {};
 
     options.filters = [
-        {services: [TEXT_SERVICE_UUID]}
+        {services: [INK_SERVICE_UUID]}
     ];
 
     updateStatus('Connecting...');
@@ -49,12 +49,12 @@ async function connect() {
             server = await bluetoothDevice.gatt.connect();
         }
         console.log("server", server);
-        service = await server.getPrimaryService(TEXT_SERVICE_UUID);
+        service = await server.getPrimaryService(INK_SERVICE_UUID);
         console.log("service", service);
         chara = await service.getCharacteristic(VERSION_CHARACTERISTIC_UUID)
         vercharacteristic = chara;
         console.log("characteristic", chara);    
-        chara = await service.getCharacteristic(TEXT_CHARACTERISTIC_UUID)
+        chara = await service.getCharacteristic(WRITE_CHARACTERISTIC_UUID)
         characteristic = chara;
         console.log("characteristic", chara);
         //alert("BLE接続が完了しました。");
