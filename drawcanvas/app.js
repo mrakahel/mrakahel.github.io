@@ -196,13 +196,13 @@ function drawing(event){
     
         let buf;
         if(true){
-            buf = new ArrayBuffer(7);
+            buf = new Uint8Array(7);
             buf[0] = 0x00;
-            arr_n = new Uint16Array(1);
+            let arr_n = new Uint16Array(1);
             arr_n = drawCount;
-            arr_x = new Uint16Array(1);
+            let arr_x = new Uint16Array(1);
             arr_x = Math.floor(x);
-            arr_y = new Uint16Array(1);
+            let arr_y = new Uint16Array(1);
             arr_y = Math.floor(y);
             buf.set(arr_n, 1);
             buf.set(arr_x, 3);
@@ -308,7 +308,7 @@ async function reconnect() {
 async function sendData(buf) {
     let senddata;
 
-    arr = new Uint8Array(buf.byteLength)
+    let arr = new Uint8Array(buf.byteLength)
     arr.set(new Int8Array(buf), 0);
     senddata = arr;
     await characteristic.writeValueWithResponse(senddata);
