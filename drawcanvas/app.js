@@ -204,9 +204,9 @@ function drawing(event){
             arr_x = Math.floor(x);
             let arr_y = new Uint16Array(1);
             arr_y = Math.floor(y);
-            buf.set(arr_n, 1);
-            buf.set(arr_x, 3);
-            buf.set(arr_y, 5);
+            buf.set(new Int8Array(arr_n), 1);
+            buf.set(new Int8Array(arr_x), 3);
+            buf.set(new Int8Array(arr_y), 5);
         }
 
         // Send 
@@ -306,11 +306,7 @@ async function reconnect() {
 }
 
 async function sendData(buf) {
-    let senddata;
-
-    let arr = new Uint8Array(buf.byteLength)
-    arr.set(new Int8Array(buf), 0);
-    senddata = arr;
+    let senddata = buf;
     await characteristic.writeValueWithResponse(senddata);
 
     return true;
