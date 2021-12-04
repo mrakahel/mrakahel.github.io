@@ -186,12 +186,12 @@ function beforeDraw() {
 //
 // 描画中処理
 //
-function drawing(event){
+async function drawing(event){
 
     // マウスボタンが押されていれば描画中と判断
     if (mouseDown){
-        x = event.clientX - wbound.left;
-        y = event.clientY - wbound.top;
+        let x = event.clientX - wbound.left;
+        let y = event.clientY - wbound.top;
         draw(x, y);
     
         let buf;
@@ -204,15 +204,22 @@ function drawing(event){
             arr_x = Math.floor(x);
             let arr_y = new Uint16Array(1);
             arr_y = Math.floor(y);
-            buf.set(new Int8Array(arr_n), 1);
-            buf.set(new Int8Array(arr_x), 3);
-            buf.set(new Int8Array(arr_y), 5);
+            buf.set(uint16ToUint8Array(drawCount), 1);
+            buf.set(uint16ToUint8Array(Math.floor(x)), 3);
+            buf.set(uint16ToUint8Array(Math.floor(y)), 5);
         }
 
         // Send 
-        sendData(buf);
+        let result = await sendData(buf);
     }
 }
+
+const uint16ToUint8Array = (num) => {
+	const uint8Array = new Uint8Array(2);
+    uint8Array[0]     = (num & 0xff00) >> 8;
+    uint8Array[1] =  num & 0x00ff;
+    return uint8Array;
+};
 
 //
 // 描画終了
