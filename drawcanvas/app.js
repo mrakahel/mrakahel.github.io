@@ -210,7 +210,7 @@ async function drawing(event){
         }
 
         // Send 
-        let result = await sendData(buf);
+        sendData(buf);
     }
 }
 
@@ -315,6 +315,7 @@ async function reconnect() {
 async function sendData(buf) {
     let senddata = buf;
     await characteristic.writeValueWithResponse(senddata);
+    characteristic.writeValue(senddata);
 
     return true;
 }
