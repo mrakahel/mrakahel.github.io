@@ -216,8 +216,8 @@ async function drawing(event){
 
 const uint16ToUint8Array = (num) => {
 	const uint8Array = new Uint8Array(2);
-    uint8Array[0]     = (num & 0xff00) >> 8;
-    uint8Array[1] =  num & 0x00ff;
+    uint8Array[1]     = (num & 0xff00) >> 8;
+    uint8Array[0] =  num & 0x00ff;
     return uint8Array;
 };
 
