@@ -1,6 +1,6 @@
 {
-    "short_name": "テキスト入力",
-    "name": "テキスト入力",
+    "short_name": "キャンバス入力",
+    "name": "キャンバス入力",
     "start_url": "index.html",
     "display": "standalone",
     "icons": [
