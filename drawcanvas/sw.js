@@ -1,9 +1,6 @@
-var CACHE_NAME  = "texttransfer";
+var CACHE_NAME  = "canvastransfer";
 var urlsToCache = [
-    "index.html",
     "https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js",
-    "style.css",
-    "app.js",
     "/favicon.ico"
 ];
 const CACHE_KEYS = [
