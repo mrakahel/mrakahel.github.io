@@ -100,7 +100,10 @@ $(function() {
     // undo
     //
     $("#undo").click(async function() {
-
+        if (!bluetoothDevice || !bluetoothDevice.gatt.connected){
+            console.log("device", bluetoothDevice);
+            return;
+        }
         if (undoDataStack.length <= 0) {
             return;
         }
@@ -121,7 +124,10 @@ $(function() {
     // redo
     //
     $("#redo").click(async function() {
-
+        if (!bluetoothDevice || !bluetoothDevice.gatt.connected){
+            console.log("device", bluetoothDevice);
+            return;
+        }
         if (redoDataStack.length <= 0) {
             return;
         }
@@ -142,7 +148,10 @@ $(function() {
     // clear
     //
     $("#clear").click(async function() {
-
+        if (!bluetoothDevice || !bluetoothDevice.gatt.connected){
+            console.log("device", bluetoothDevice);
+            return;
+        }
         canvas = document.getElementById('canvas');
         context = canvas.getContext('2d');
         context.clearRect(0, 0, canvas.width, canvas.height);
@@ -159,10 +168,7 @@ function startDrawTouch(e){
        return;
     }
     e.preventDefault();
-    // 描画前処理をおこないマウス押下状態にする。
-    beforeDraw();
-    mouseDown = true;
-
+    
     let touch = e.changedTouches[0];
     startDraw(touch);
 }
