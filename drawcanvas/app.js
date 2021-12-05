@@ -64,6 +64,7 @@ async function connect() {
         console.log("characteristic", chara);
         //alert("BLE接続が完了しました。");
         updateStatus('Connected');
+        
     }catch(error){
         console.log(error);
         updateStatus(error);
@@ -180,7 +181,10 @@ function drawingTouch(e){
 // 描画開始
 //
 function startDraw(event){
-
+    if (!bluetoothDevice || !bluetoothDevice.gatt.connected){
+        console.log("device", bluetoothDevice);
+        return;
+    }
     // 描画前処理をおこないマウス押下状態にする。
     beforeDraw();
     mouseDown = true;
