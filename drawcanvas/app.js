@@ -17,6 +17,11 @@ let undoDataStack = [];
 let redoDataStack = [];
 let mouseDown = false;
 let drawCount = 0;
+let points = [];
+let strokes = [];
+
+const chunkCheckInterval = 50;
+const maxchunk = 500;
 
 //ボタンイベントリスナー
 d3.select("#connect").on("click", connect);
@@ -177,6 +182,7 @@ function beforeDraw() {
 
     // undo領域に描画情報を格納
     redoDataStack = [];
+    points = [];
     canvas = document.getElementById('canvas');
     context = canvas.getContext('2d');
     undoDataStack.unshift(context.getImageData(0, 0, canvas.width, canvas.height));
@@ -192,31 +198,14 @@ async function drawing(event){
     if (mouseDown){
         let x = event.clientX - wbound.left;
         let y = event.clientY - wbound.top;
+        points.push({X: x, Y: y});
         draw(x, y);
-    
-        let buf;
-        if(true){
-            buf = new Uint8Array(7);
-            buf[0] = 0x00;
-            let arr_n = new Uint16Array(1);
-            arr_n = drawCount;
-            let arr_x = new Uint16Array(1);
-            arr_x = Math.floor(x);
-            let arr_y = new Uint16Array(1);
-            arr_y = Math.floor(y);
-            buf.set(uint16ToUint8Array(drawCount), 1);
-            buf.set(uint16ToUint8Array(Math.floor(x)), 3);
-            buf.set(uint16ToUint8Array(Math.floor(y)), 5);
-        }
-
-        // Send 
-        sendData(buf);
     }
 }
 
 const uint16ToUint8Array = (num) => {
 	const uint8Array = new Uint8Array(2);
-    uint8Array[1]     = (num & 0xff00) >> 8;
+    uint8Array[1] = (num & 0xff00) >> 8;
     uint8Array[0] =  num & 0x00ff;
     return uint8Array;
 };
@@ -224,7 +213,7 @@ const uint16ToUint8Array = (num) => {
 //
 // 描画終了
 //
-function endDraw(event){
+async function endDraw(event){
 
     // マウスボタンが押されていれば描画中と判断
     if (mouseDown){
@@ -233,7 +222,16 @@ function endDraw(event){
         mouseDown = false;
     }
 
+    let header = 0x00;
+    let buf = new Uint8Array(points.length * 2 * 2);
+    for(let i=0; i<points.length; i++){
+        buf.set(uint16ToUint8Array(points[i].X), i*4);
+        buf.set(uint16ToUint8Array(points[i].Y), (i*4)+2);
+    }
+    points = [];
     // Send 
+    let result = await sendData(header, buf);
+
 }
 
 //
@@ -312,11 +310,39 @@ async function reconnect() {
     return false;
 }
 
-async function sendData(buf) {
-    let senddata = buf;
-    await characteristic.writeValueWithResponse(senddata);
-    characteristic.writeValue(senddata);
+async function sendData(header, buf) {
+    let readidx = 0;
+    let senddata;
+    let chunkCnt = 0;
+    header = header | 0x80;
+    
+    while(readidx < buf.byteLength){
+        while(chunkCnt < chunkCheckInterval && readidx < buf.byteLength){
+            let arr;
+            if(cancelreq){
+                return false;
+            }
+            if(readidx+maxchunk < buf.byteLength){
+                // 継続データあり
+                arr = new Uint8Array(maxchunk+1);
+                arr.set(new Int8Array(buf.slice(readidx, readidx+maxchunk)), 1);
+                arr[0] = header | 0x01;
+                senddata = arr;
+            }else{
+                // 継続データなし
+                arr = new Uint8Array(buf.byteLength-readidx+1)
+                arr.set(new Int8Array(buf.slice(readidx, buf.byteLength)), 1);
+                arr[0] = header & 0xfe;
+                senddata = arr;
+            }
+            readidx += maxchunk; 
+            await characteristic.writeValueWithResponse(senddata);
+            header = header & 0x7f;
+            chunkCnt++;
+        }
 
+        chunkCnt = 0;
+    }
     return true;
 }
 
