@@ -319,9 +319,9 @@ async function sendData(header, buf) {
     while(readidx < buf.byteLength){
         while(chunkCnt < chunkCheckInterval && readidx < buf.byteLength){
             let arr;
-            if(cancelreq){
-                return false;
-            }
+            //if(cancelreq){
+            //    return false;
+            //}
             if(readidx+maxchunk < buf.byteLength){
                 // 継続データあり
                 arr = new Uint8Array(maxchunk+1);
