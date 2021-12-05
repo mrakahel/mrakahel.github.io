@@ -110,8 +110,10 @@ $(function() {
 
         var imageData = undoDataStack.shift();
         context.putImageData(imageData, 0, 0);
+        let buf = new ArrayBuffer(1);
+        buf.set(Command.Undo, 0);
         // Send 
-        let result = await sendData(Command.Undo, new ArrayBuffer(1));
+        let result = await sendData(Command.Undo, buf);
     });
 
     //
@@ -129,8 +131,10 @@ $(function() {
 
         var imageData = redoDataStack.shift();
         context.putImageData(imageData, 0, 0);
+        let buf = new ArrayBuffer(1);
+        buf.set(Command.Undo, 0);
         // Send 
-        let result = await sendData(Command.Redo, new ArrayBuffer(1));
+        let result = await sendData(Command.Redo, buf);
     });
 
     //
@@ -141,8 +145,10 @@ $(function() {
         canvas = document.getElementById('canvas');
         context = canvas.getContext('2d');
         context.clearRect(0, 0, canvas.width, canvas.height);
+        let buf = new ArrayBuffer(1);
+        buf.set(Command.Undo, 0);
         // Send 
-        let result = await sendData(Command.Clear, new ArrayBuffer(1));
+        let result = await sendData(Command.Clear, buf);
     });
 
 });
