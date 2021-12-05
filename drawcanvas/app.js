@@ -132,6 +132,19 @@ $(function() {
         // Send 
         let result = await sendData(Command.Redo, 0x00);
     });
+
+    //
+    // clear
+    //
+    $("#clear").click(function() {
+
+        canvas = document.getElementById('canvas');
+        context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        // Send 
+        let result = await sendData(Command.Clear, 0x00);
+    });
+
 });
 
 function startDrawTouch(e){
