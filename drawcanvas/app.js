@@ -6,10 +6,10 @@ let bluetoothDevice;
 let characteristic;
 let vercharacteristic;
 
-let INK_SERVICE_UUID = 'b07ff626-4b78-0001-89e5-fae40ab7e07f';
-let WRITE_CHARACTERISTIC_UUID = 'b07ff626-4b78-0004-89e5-fae40ab7e07f';
-let VERSION_CHARACTERISTIC_UUID = 'b07ff626-4b78-0002-89e5-fae40ab7e07f';
-
+const INK_SERVICE_UUID = 'b07ff626-4b78-0001-89e5-fae40ab7e07f';
+const WRITE_CHARACTERISTIC_UUID = 'b07ff626-4b78-0004-89e5-fae40ab7e07f';
+const VERSION_CHARACTERISTIC_UUID = 'b07ff626-4b78-0002-89e5-fae40ab7e07f';
+const Command = { Draw: 0x02, Undo: 0x04, Redo: 0x06, Clear: 0x08 }; 
 let status;
 
 let CANVAS_SIZE;
@@ -110,6 +110,8 @@ $(function() {
 
         var imageData = undoDataStack.shift();
         context.putImageData(imageData, 0, 0);
+        // Send 
+        let result = await sendData(Command.Undo, 0x00);
     });
 
     //
@@ -127,6 +129,8 @@ $(function() {
 
         var imageData = redoDataStack.shift();
         context.putImageData(imageData, 0, 0);
+        // Send 
+        let result = await sendData(Command.Redo, 0x00);
     });
 });
 
@@ -172,7 +176,6 @@ function startDraw(event){
     context = canvas.getContext("2d");
 
     drawCount++;
-    // Send 
 }
 
 //
@@ -222,13 +225,12 @@ async function endDraw(event){
         mouseDown = false;
     }
 
-    let header = 0x00;
+    let header = Command.Draw;
     let buf = new Uint8Array(points.length * 2 * 2);
     for(let i=0; i<points.length; i++){
         buf.set(uint16ToUint8Array(points[i].X), i*4);
         buf.set(uint16ToUint8Array(points[i].Y), (i*4)+2);
     }
-    points = [];
     // Send 
     let result = await sendData(header, buf);
 
