@@ -98,7 +98,7 @@ $(function() {
     //
     // undo
     //
-    $("#undo").click(function() {
+    $("#undo").click(async function() {
 
         if (undoDataStack.length <= 0) {
             return;
@@ -117,7 +117,7 @@ $(function() {
     //
     // redo
     //
-    $("#redo").click(function() {
+    $("#redo").click(async function() {
 
         if (redoDataStack.length <= 0) {
             return;
@@ -136,7 +136,7 @@ $(function() {
     //
     // clear
     //
-    $("#clear").click(function() {
+    $("#clear").click(async function() {
 
         canvas = document.getElementById('canvas');
         context = canvas.getContext('2d');
